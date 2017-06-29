@@ -1,0 +1,8 @@
+#!/usr/bin/env php
+<?php declare(strict_types = 1);
+
+use Mihaeu\TestGenerator\TestGenerator;
+
+require __DIR__ . '/../vendor/autoload.php';
+
+echo (new TestGenerator())->run($argv[1]);
