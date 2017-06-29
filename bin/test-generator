@@ -1,8 +1,19 @@
 #!/usr/bin/env php
 <?php declare(strict_types = 1);
 
+use Mihaeu\TestGenerator\ClassAnalyser;
+use Mihaeu\TestGenerator\PhpFile;
 use Mihaeu\TestGenerator\TestGenerator;
+use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor\NameResolver;
+use PhpParser\ParserFactory;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-echo (new TestGenerator())->run($argv[1]);
+$testGenerator = new TestGenerator(
+    (new ParserFactory())->create(ParserFactory::PREFER_PHP7),
+    new NameResolver(),
+    new ClassAnalyser(),
+    new NodeTraverser()
+);
+echo $testGenerator->run(new PhpFile(new SplFileInfo($argv[1])));

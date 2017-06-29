@@ -1,0 +1,42 @@
+{
+    "name": "mihaeu/test-generator",
+    "description": "Generate test cases for existing files",
+    "type": "library",
+    "homepage": "https://github.com/mihaeu/php-test-generator",
+    "keywords": [
+        "testing",
+        "generation",
+        "phpunit",
+        "mockery"
+    ],
+    "bin": ["bin/test-generator"],
+    "require": {
+        "nikic/php-parser": "^3.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.0"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Michael Haeuslmann",
+            "email": "haeuslmann@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Mihaeu\\TestGenerator\\": ["src/"]
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Mihaeu\\TestGenerator\\": ["tests/unit/"]
+        },
+        "files": ["vendor/phpunit/phpunit/src/Framework/Assert/Functions.php"]
+    },
+    "support": {
+        "issues": "https://github.com/mihaeu/php-test-generator/issues"
+    }
+}
