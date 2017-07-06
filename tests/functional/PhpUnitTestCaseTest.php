@@ -38,16 +38,24 @@ class ATest extends TestCase
 {
     /** @var A */
     private $a;
-    
-    /** @var ClassA */
+
+    /** @var ClassA | PHPUnit_Framework_MockObject_MockObject */
     private $classA;
-    
+
     protected function setUp()
     {
         $this->classA = $this->createMock(ClassA::class);
-        $this->a = new A($classA); 
+        $this->a = new A(
+            $this->classA
+        );
+    }
+
+    public function testMissing()
+    {
+        $this->fail('Test not yet implemented');
     }
 }
+
 EOT;
 
         $actual = shell_exec(self::TEST_GENERATOR_BINARY . ' ' .$this->generateTestFile($sourceFile));
@@ -56,7 +64,7 @@ EOT;
 
     private function generateTestFile(string $content) : string
     {
-        $this->currentTestFileFilename = tempnam(sys_get_temp_dir(), microtime());
+        $this->currentTestFileFilename = '/tmp/testfilefortestgenerator';
         file_put_contents($this->currentTestFileFilename, $content);
         return $this->currentTestFileFilename;
     }

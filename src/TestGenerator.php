@@ -35,7 +35,7 @@ class TestGenerator
         $nodes = $this->parser->parse($file->content());
         $this->nodeTraverser->traverse($nodes);
 
-        return phpunit6Template(
+        return phpunit6Template()(
             $this->classAnalyser->getClass(),
             $this->classAnalyser->getParameters()
         );

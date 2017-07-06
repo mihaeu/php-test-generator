@@ -110,6 +110,9 @@ class XTest extends TestCase
 
     protected function setUp()
     {
+        $this->a = $this->createMock(A::class);
+        $this->b = $this->createMock(B::class);
+        $this->c = $this->createMock(C::class);
         $this->x = new X(
             $this->a,
             $this->b,

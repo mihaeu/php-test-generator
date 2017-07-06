@@ -2,8 +2,9 @@
 
 namespace Mihaeu\TestGenerator;
 
-function phpunit6Template(string $class, array $parameters = []) : string
+function phpunit6Template() : \Closure
 {
+    return function (string $class, array $parameters = []) : string {
     ob_start(); ?>
 ?php declare(strict_types = 1);
 
@@ -12,7 +13,7 @@ use PHPUnit\Framework\TestCase;
 class <?= $class ?>Test extends TestCase
 {
     /** @var <?= $class ?> */
-    private $<?= strtolower($class) ?>;
+    private $<?= lcfirst($class) ?>;
 
 <?php if (!empty($parameters)) : ?>
 <?php foreach ($parameters as $name => $type) : ?>
@@ -24,9 +25,12 @@ class <?= $class ?>Test extends TestCase
     protected function setUp()
     {
 <?php if (empty($parameters)) :?>
-        $this-><?= strtolower($class) ?> = new <?= $class ?>();
+        $this-><?= lcfirst($class) ?> = new <?= $class ?>();
 <?php else : ?>
-        $this-><?= strtolower($class) ?> = new <?= $class ?>(
+<?php foreach ($parameters as $name => $type) : ?>
+        $this-><?= $name ?> = $this->createMock(<?= $type ?>::class);
+<?php endforeach; ?>
+        $this-><?= lcfirst($class) ?> = new <?= $class ?>(
             <?= implode(",\n            ", array_map(function ($x) {return '$this->'.$x;}, array_keys($parameters))) ?>
 
         );
@@ -40,4 +44,5 @@ class <?= $class ?>Test extends TestCase
 }
 <?php
     return '<'.ob_get_clean();
+    };
 }
