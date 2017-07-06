@@ -45,12 +45,35 @@ class TestGeneratorTest extends TestCase
         );
     }
 
-    public function testDoesNotPrintTemplateIfFileDoesNotHaveAConstructor()
+    public function testPrintsEmptyTemplateIfFileDoesNotHaveAConstructor()
     {
         $this->parser->method('parse')->willReturn([]);
 
         $file = $this->createMock(PhpFile::class);
-        $file->method('content')->willReturn('<?php class A {}');
-        assertEmpty($this->testGenerator->run($file));
+        $file->method('content')->willReturn('<?php class X {}');
+
+        $expected = <<<'EOT'
+<?php declare(strict_types = 1);
+
+use PHPUnit\Framework\TestCase;
+
+class ATest extends TestCase
+{
+    /** @var A */
+    private $a;
+
+    protected function setUp()
+    {
+        $this->a = new A();
+    }
+
+    public function testMissing()
+    {
+        $this->fail('Test not yet implemented');
+    }
+}
+
+EOT;
+        assertEquals($expected, $this->testGenerator->run($file));
     }
 }

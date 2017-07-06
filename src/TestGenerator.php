@@ -40,7 +40,7 @@ class TestGenerator
         $nodes = $this->parser->parse($file->content());
         $this->nodeTraverser->traverse($nodes);
 
-        return implode('', $this->classAnalyser->getParameters());
+        return phpunit6Template('A');
     }
 }
 

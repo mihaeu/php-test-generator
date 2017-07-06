@@ -22,14 +22,14 @@ class PhpUnitTestCaseTest extends TestCase
 
     public function testGenerateSimplePhpUnitTestCase()
     {
-        $sourceFile = <<<EOT
+        $sourceFile = <<<'EOT'
 <?php
 class A {
-    function __construct(ClassA \$classA) {}
+    function __construct(ClassA $classA) {}
 }
 EOT;
 
-        $expected = <<<EOT
+        $expected = <<<'EOT'
 <?php declare(strict_types = 1);
 
 use PHPUnit\Framework\TestCase;
@@ -37,15 +37,15 @@ use PHPUnit\Framework\TestCase;
 class ATest extends TestCase
 {
     /** @var A */
-    private \$a;
+    private $a;
     
     /** @var ClassA */
-    private \$classA;
+    private $classA;
     
     protected function setUp()
     {
-        \$this->classA = \$this->createMock(ClassA::class);
-        \$this->a = new A(\$classA); 
+        $this->classA = $this->createMock(ClassA::class);
+        $this->a = new A($classA); 
     }
 }
 EOT;

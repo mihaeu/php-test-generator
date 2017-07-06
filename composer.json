@@ -28,7 +28,10 @@
     "autoload": {
         "psr-4": {
             "Mihaeu\\TestGenerator\\": ["src/"]
-        }
+        },
+        "files": [
+            "templates/phpunit6/phpunit6Template.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
