@@ -8,6 +8,7 @@ use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\Parser;
 use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_MockObject_MockObject as Mock;
 
 /**
  * @covers Mihaeu\TestGenerator\TestGenerator
@@ -17,16 +18,16 @@ class TestGeneratorTest extends TestCase
     /** @var TestGenerator */
     private $testGenerator;
 
-    /** @var Parser */
+    /** @var Parser | Mock */
     private $parser;
 
-    /** @var NameResolver */
+    /** @var NameResolver | Mock */
     private $nameResolver;
 
-    /** @var ClassAnalyser */
+    /** @var ClassAnalyser | Mock */
     private $classAnalyser;
 
-    /** @var NodeTraverser */
+    /** @var NodeTraverser | Mock */
     private $nodeTraverser;
 
 
