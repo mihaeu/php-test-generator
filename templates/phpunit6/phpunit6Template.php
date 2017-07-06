@@ -2,7 +2,7 @@
 
 namespace Mihaeu\TestGenerator;
 
-function phpunit6Template(string $class)
+function phpunit6Template(string $class, array $parameters = []) : string
 {
     ob_start(); ?>
 ?php declare(strict_types = 1);
@@ -14,9 +14,23 @@ class <?= $class ?>Test extends TestCase
     /** @var <?= $class ?> */
     private $<?= strtolower($class) ?>;
 
+<?php if (!empty($parameters)) : ?>
+<?php foreach ($parameters as $name => $type) : ?>
+    /** @var <?= $type ?> | PHPUnit_Framework_MockObject_MockObject */
+    private $<?= $name ?>;
+
+<?php endforeach; ?>
+<?php endif; ?>
     protected function setUp()
     {
+<?php if (empty($parameters)) :?>
         $this-><?= strtolower($class) ?> = new <?= $class ?>();
+<?php else : ?>
+        $this-><?= strtolower($class) ?> = new <?= $class ?>(
+            <?= implode(",\n            ", array_map(function ($x) {return '$this->'.$x;}, array_keys($parameters))) ?>
+
+        );
+<?php endif; ?>
     }
 
     public function testMissing()

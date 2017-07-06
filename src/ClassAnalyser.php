@@ -14,6 +14,9 @@ class ClassAnalyser extends NodeVisitorAbstract
     /** @var array */
     private $parameters = [];
 
+    /** @var string */
+    private $class;
+
     public function enterNode(Node $node)
     {
         if ($node instanceof ClassMethod && $node->name === self::CONSTRUCTOR_METHOD_NAME) {
@@ -21,11 +24,18 @@ class ClassAnalyser extends NodeVisitorAbstract
                 $parameters[$parameter->name] = $parameter->type->toString();
                 return $parameters;
             }, $this->parameters);
+        } elseif ($node instanceof Node\Stmt\Class_) {
+            $this->class = $node->name;
         }
     }
 
     public function getParameters() : array
     {
         return $this->parameters;
+    }
+
+    public function getClass() : string
+    {
+        return $this->class;
     }
 }

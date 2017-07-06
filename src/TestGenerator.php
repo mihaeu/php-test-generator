@@ -5,15 +5,11 @@ namespace Mihaeu\TestGenerator;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\Parser;
-use PhpParser\ParserFactory;
 
 class TestGenerator
 {
     /** @var Parser */
     private $parser;
-
-    /** @var NameResolver */
-    private $nameResolver;
 
     /** @var ClassAnalyser */
     private $classAnalyser;
@@ -28,10 +24,9 @@ class TestGenerator
         NodeTraverser $nodeTraverser
     ) {
         $this->parser = $parser;
-        $this->nameResolver = $nameResolver;
         $this->classAnalyser = $classAnalyser;
         $this->nodeTraverser = $nodeTraverser;
-        $this->nodeTraverser->addVisitor($this->nameResolver);
+        $this->nodeTraverser->addVisitor($nameResolver);
         $this->nodeTraverser->addVisitor($this->classAnalyser);
     }
 
@@ -40,7 +35,10 @@ class TestGenerator
         $nodes = $this->parser->parse($file->content());
         $this->nodeTraverser->traverse($nodes);
 
-        return phpunit6Template('A');
+        return phpunit6Template(
+            $this->classAnalyser->getClass(),
+            $this->classAnalyser->getParameters()
+        );
     }
 }
 

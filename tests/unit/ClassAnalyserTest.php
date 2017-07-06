@@ -40,4 +40,13 @@ class ClassAnalyserTest extends TestCase
         $this->classAnalyser->enterNode($methodNode);
         assertEquals(['Example' => 'A'], $this->classAnalyser->getParameters());
     }
+
+    public function testFindsClass() : void
+    {
+        $classNode = $this->createMock(Class_::class);
+        $classNode->name = 'A';
+
+        $this->classAnalyser->enterNode($classNode);
+        assertEquals('A', $this->classAnalyser->getClass());
+    }
 }
