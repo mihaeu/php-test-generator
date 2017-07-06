@@ -16,6 +16,6 @@ class PhpFile
 
     public function content() : string
     {
-        return '';
+        return file_get_contents($this->file->getRealPath());
     }
 }

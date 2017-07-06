@@ -18,4 +18,12 @@ class PhpFileTest extends TestCase
         assertEmpty((new PhpFile(new \SplFileInfo($emptyFilename)))->content());
         unlink($emptyFilename);
     }
+
+    public function testReturnsFileContents()
+    {
+        $emptyFilename = '/tmp/test-generator-regular-file';
+        file_put_contents($emptyFilename, 'testdata');
+        assertEquals('testdata', (new PhpFile(new \SplFileInfo($emptyFilename)))->content());
+        unlink($emptyFilename);
+    }
 }
