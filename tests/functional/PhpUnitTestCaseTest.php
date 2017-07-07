@@ -13,14 +13,14 @@ class PhpUnitTestCaseTest extends TestCase
     /** @var string */
     private $currentTestFileFilename;
 
-    protected function tearDown()
+    protected function tearDown() : void
     {
         if (file_exists($this->currentTestFileFilename)) {
             unlink($this->currentTestFileFilename);
         }
     }
 
-    public function testGenerateSimplePhpUnitTestCase()
+    public function testGenerateSimplePhpUnitTestCase() : void
     {
         $sourceFile = <<<'EOT'
 <?php

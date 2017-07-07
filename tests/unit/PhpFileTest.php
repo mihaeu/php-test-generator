@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
  */
 class PhpFileTest extends TestCase
 {
-    public function testReturnsEmptyStringForEmptyFile()
+    public function testReturnsEmptyStringForEmptyFile() : void
     {
         $emptyFilename = '/tmp/test-generator-empty-file';
         touch($emptyFilename);
@@ -19,7 +19,7 @@ class PhpFileTest extends TestCase
         unlink($emptyFilename);
     }
 
-    public function testReturnsFileContents()
+    public function testReturnsFileContents() : void
     {
         $emptyFilename = '/tmp/test-generator-regular-file';
         file_put_contents($emptyFilename, 'testdata');

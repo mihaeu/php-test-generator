@@ -30,7 +30,7 @@ class TestGeneratorTest extends TestCase
     /** @var NodeTraverser | Mock */
     private $nodeTraverser;
 
-    public function setUp()
+    protected function setUp() : void
     {
         $this->parser = $this->createMock(Parser::class);
         $this->nameResolver = $this->createMock(NameResolver::class);
@@ -44,7 +44,7 @@ class TestGeneratorTest extends TestCase
         );
     }
 
-    public function testPrintsEmptyTemplateIfFileDoesNotHaveAConstructor()
+    public function testPrintsEmptyTemplateIfFileDoesNotHaveAConstructor() : void
     {
         $this->parser->method('parse')->willReturn([]);
         $this->classAnalyser->method('getClass')->willReturn('A');
@@ -76,7 +76,7 @@ EOT;
         assertEquals($expected, $this->testGenerator->run($file));
     }
 
-    public function testInjectsDependenciesIntoTestClass()
+    public function testInjectsDependenciesIntoTestClass() : void
     {
         $this->parser->method('parse')->willReturn([]);
         $this->classAnalyser->method('getClass')->willReturn('X');

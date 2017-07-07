@@ -14,7 +14,7 @@ class ClassAnalyserTest extends TestCase
     /** @var ClassAnalyser */
     private $classAnalyser;
 
-    public function setUp() : void
+    protected function setUp() : void
     {
         $this->classAnalyser = new ClassAnalyser();
     }
