@@ -7,12 +7,14 @@ PHP=php
 PHP_NO_INI=php -n
 PHPUNIT=vendor/bin/phpunit
 
-all: check autoload test testdox cov
+all: check-reqs checks autoload test testdox cov
 
 autoload:
 	composer install
 
-check:
+checks: phpstan phpcs
+
+check-reqs:
 	@echo "Verifying dev dependencies are installed ..."
 	@test -f box.phar || { echo >&2 "Box is not installed locally"; exit 1; }
 	@test -f phpcs.phar || { echo >&2 "PHP_CodeSniffer is not installed locally"; exit 2; }
@@ -45,6 +47,18 @@ phar:
 	@$(PHP) box.phar build
 	@chmod +x build/test-generator.phar
 	@composer update
+
+phpstan:
+	@$(PHP_NO_INI) phpstan.phar analyse src tests --level=4 -c phpstan.neon
+
+phpmd:
+	@$(PHP_NO_INI) phpmd.phar
+
+phpcs:
+	@$(PHP_NO_INI) phpcs.phar --standard=PSR2 src tests
+
+phpcbf:
+	@$(PHP_NO_INI) phpcbf.phar --standard=PSR2 src tests
 
 c: cov
 

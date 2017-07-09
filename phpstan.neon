@@ -2,4 +2,4 @@ parameters:
     ignoreErrors:
         - '#does not accept PHPUnit_Framework_MockObject_MockObject#'
         - '#Call to an undefined method [a-zA-Z0-9\\_]+::method\(\)#'
-        - '#Access to an undefined property PHPUnit_FraPhpUnitTestCaseTestmework_MockObject_MockObject::\$[a-zA-Z0-9_]+#'
+        - '#Access to an undefined property PHPUnit_Framework_MockObject_MockObject::\$[a-zA-Z0-9_]+#'
