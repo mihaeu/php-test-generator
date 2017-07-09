@@ -35,7 +35,10 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "Mihaeu\\TestGenerator\\": ["tests/unit/"]
+            "Mihaeu\\TestGenerator\\": [
+                "tests/unit/",
+                "tests/functional/"
+            ]
         },
         "files": ["vendor/phpunit/phpunit/src/Framework/Assert/Functions.php"]
     },

@@ -1,6 +1,8 @@
 <?php declare(strict_types=1);
 
-use Mihaeu\TestGenerator\ClassAnalyser;
+namespace Mihaeu\TestGenerator;
+
+use PhpParser\Node\Name;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -33,7 +35,7 @@ class ClassAnalyserTest extends TestCase
 
         $param = $this->createMock(Param::class);
         $param->name = 'Example';
-        $name = $this->createMock(PhpParser\Node\Name::class);
+        $name = $this->createMock(Name::class);
         $name->method('toString')->willReturn('A');
         $param->type = $name;
         $methodNode->method('getParams')->willReturn([$param]);
