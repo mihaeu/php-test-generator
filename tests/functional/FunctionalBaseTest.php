@@ -6,7 +6,7 @@ namespace Mihaeu\TestGenerator;
 
 use PHPUnit\Framework\TestCase;
 
-class PhpUnitTestCaseTest extends TestCase
+class FunctionalBaseTest extends TestCase
 {
     const TEST_GENERATOR_BINARY = PHP_BINARY . ' ' . __DIR__ . '/../../bin/test-generator';
 
