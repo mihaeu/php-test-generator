@@ -26,7 +26,7 @@ cov:
 	@$(PHP) $(PHPUNIT) -c phpunit.xml.dist --coverage-text
 
 feature:
-	@$(PHP_NO_INI) $(PHPUNIT) -c phpunit.xml.dist  --testsuite=feature --testdox\
+	@$(PHP_NO_INI) $(PHPUNIT) -c phpunit.xml.dist  --testsuite=functional --testdox\
 	 | sed 's/\[x\]/$(OK_COLOR)$\[x]$(NO_COLOR)/' \
 	 | sed -r 's/(\[ \].+)/$(ERROR_COLOR)\1$(NO_COLOR)/' \
 	 | sed -r 's/(^[^ ].+)/$(WARN_COLOR)\1$(NO_COLOR)/'

@@ -20,46 +20,32 @@ class PhpUnitTestCaseTest extends TestCase
         }
     }
 
-    public function testGenerateSimplePhpUnitTestCase() : void
+    /**
+     * @dataProvider provideFixtures
+     */
+    public function testGenerateSimplePhpUnitTestCase(string $source, string $expected, string $message) : void
     {
-        $sourceFile = <<<'EOT'
-<?php
-class A {
-    function __construct(ClassA $classA) {}
-}
-EOT;
-
-        $expected = <<<'EOT'
-<?php declare(strict_types = 1);
-
-use PHPUnit\Framework\TestCase;
-
-class ATest extends TestCase
-{
-    /** @var A */
-    private $a;
-
-    /** @var ClassA | PHPUnit_Framework_MockObject_MockObject */
-    private $classA;
-
-    protected function setUp()
-    {
-        $this->classA = $this->createMock(ClassA::class);
-        $this->a = new A(
-            $this->classA
-        );
+        $actual = shell_exec(self::TEST_GENERATOR_BINARY . ' ' .$this->generateTestFile($source));
+        assertEquals($expected, $actual, $message);
     }
 
-    public function testMissing()
+    public function provideFixtures() : array
     {
-        $this->fail('Test not yet implemented');
-    }
-}
+        $dir = __DIR__;
+        $fixtures = array_filter(scandir($dir . '/fixtures'), function (string $dirname) use ($dir) {
+            return is_dir($dir . '/fixtures/' . $dirname)
+                && strpos($dirname, '.') !== 0;
+        });
 
-EOT;
-
-        $actual = shell_exec(self::TEST_GENERATOR_BINARY . ' ' .$this->generateTestFile($sourceFile));
-        assertEquals($expected, $actual);
+        $testArguments = [];
+        foreach ($fixtures as $fixtureDir) {
+            $testArguments[] = [
+                file_get_contents($dir . '/fixtures/' . $fixtureDir . '/source.php'),
+                file_get_contents($dir . '/fixtures/' . $fixtureDir . '/expected.php'),
+                $this->camelCaseToReadable($fixtureDir),
+            ];
+        }
+        return $testArguments;
     }
 
     private function generateTestFile(string $content) : string
@@ -67,5 +53,14 @@ EOT;
         $this->currentTestFileFilename = '/tmp/testfilefortestgenerator';
         file_put_contents($this->currentTestFileFilename, $content);
         return $this->currentTestFileFilename;
+    }
+
+    private function camelCaseToReadable(string $camelCaseText) : string
+    {
+        return strtolower(
+            trim(
+                preg_replace('/[A-Z]/', ' $1', $camelCaseText)
+            )
+        );
     }
 }
