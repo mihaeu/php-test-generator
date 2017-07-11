@@ -1,8 +1,12 @@
-# Test Generator
+# 🔧 Test Generator 🔨
 
 > Generate test cases for existing files
 
-**THIS PROJECT GOT JUST STARTED AND IS VERY UNSTABLE. USE AT YOUR OWN RISK.**
+## Usage
+
+```bash
+
+```
 
 ## Installation
 

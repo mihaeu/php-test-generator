@@ -10,10 +10,27 @@ use PhpParser\ParserFactory;
 
 require __DIR__ . '/../vendor/autoload.php';
 
-$testGenerator = new TestGenerator(
-    (new ParserFactory())->create(ParserFactory::PREFER_PHP7),
-    new NameResolver(),
-    new ClassAnalyser(),
-    new NodeTraverser()
-);
-echo $testGenerator->run(new PhpFile(new SplFileInfo($argv[1])));
+$description = <<<EOT
+Test-Generator
+
+Usage:
+  test-generator <file>
+EOT;
+$args = Docopt::handle($description);
+
+try {
+    $testGenerator = new TestGenerator(
+        (new ParserFactory())->create(ParserFactory::PREFER_PHP7),
+        new NameResolver(),
+        new ClassAnalyser(),
+        new NodeTraverser()
+    );
+    echo $testGenerator->run(new PhpFile(new SplFileInfo($args['<file>'])));
+} catch (Exception $exception) {
+    echo $description
+        . PHP_EOL
+        . PHP_EOL
+        . '! ' . $exception->getMessage()
+        . PHP_EOL;
+    exit(1);
+}

@@ -50,7 +50,7 @@ class FunctionalBaseTest extends TestCase
 
     private function generateTestFile(string $content) : string
     {
-        $this->currentTestFileFilename = '/tmp/testfilefortestgenerator';
+        $this->currentTestFileFilename = '/tmp/testfilefortestgenerator.php';
         file_put_contents($this->currentTestFileFilename, $content);
         return $this->currentTestFileFilename;
     }
