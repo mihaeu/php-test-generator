@@ -11,6 +11,7 @@
     ],
     "bin": ["bin/test-generator"],
     "require": {
+        "php": "^7.1",
         "nikic/php-parser": "^3.0",
         "docopt/docopt": "^1.0"
     },
