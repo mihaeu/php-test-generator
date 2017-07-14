@@ -7,7 +7,7 @@ PHP=php
 PHP_NO_INI=php -n
 PHPUNIT=vendor/bin/phpunit
 
-all: check-reqs checks autoload test testdox cov
+all: check-reqs checks autoload test testdox cov humbug
 
 autoload:
 	composer install
@@ -31,6 +31,9 @@ feature:
 	 | sed -r 's/(\[ \].+)/$(ERROR_COLOR)\1$(NO_COLOR)/' \
 	 | sed -r 's/(^[^ ].+)/$(WARN_COLOR)\1$(NO_COLOR)/'
 
+humbug:
+	@vendor/bin/humbug
+
 unit:
 	$(PHP_NO_INI) $(PHPUNIT) -c phpunit.xml.dist --testsuite=unit
 
@@ -49,7 +52,7 @@ phar:
 	@composer update
 
 phpstan:
-	@$(PHP_NO_INI) phpstan.phar analyse src tests --level=4 -c phpstan.neon
+	@$(PHP_NO_INI) phpstan.phar analyse src tests/unit --level=4 -c phpstan.neon
 
 phpmd:
 	@$(PHP_NO_INI) phpmd.phar
