@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Mihaeu\TestGenerator;
 
-use PHPUnit\Framework\TestCase;
+use PHPUnit_Framework_TestCase as TestCase;
 
 class FunctionalBaseTest extends TestCase
 {
