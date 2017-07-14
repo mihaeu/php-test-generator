@@ -6,6 +6,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Function_;
 use PHPUnit_Framework_TestCase as TestCase;
 
 /**
@@ -41,6 +42,22 @@ class ClassAnalyserTest extends TestCase
         $methodNode->method('getParams')->willReturn([$param]);
         $this->classAnalyser->enterNode($methodNode);
         assertEquals(['Example' => 'A'], $this->classAnalyser->getParameters());
+    }
+
+    public function testAnalysesOnlyClassConstructors() : void
+    {
+        $functionNode = $this->createMock(Function_::class);
+        $functionNode->name = '__construct';
+
+        $param = $this->createMock(Param::class);
+        $param->name = 'Example';
+        $name = $this->createMock(Name::class);
+        $name->method('toString')->willReturn('A');
+        $param->type = $name;
+        $functionNode->method('getParams')->willReturn([$param]);
+
+        $this->classAnalyser->enterNode($functionNode);
+        assertEmpty($this->classAnalyser->getParameters());
     }
 
     public function testFindsClass() : void

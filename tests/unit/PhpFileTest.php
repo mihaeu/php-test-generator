@@ -34,6 +34,12 @@ class PhpFileTest extends TestCase
         new PhpFile(new \SplFileInfo(sys_get_temp_dir()));
     }
 
+    public function testDoesNotAcceptDirectoriesThatLookLikePhpFiles() : void
+    {
+        $this->expectException(NotAPhpFileException::class);
+        new PhpFile(new \SplFileInfo(sys_get_temp_dir().'.php'));
+    }
+
     public function testDoesNotAcceptFilesWithoutPhpExtension() : void
     {
         $this->expectException(NotAPhpFileException::class);

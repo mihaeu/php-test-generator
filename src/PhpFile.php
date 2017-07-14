@@ -11,7 +11,7 @@ class PhpFile
 
     public function __construct(\SplFileInfo $file)
     {
-        if (!$file->isFile() && $file->getExtension() !== 'php') {
+        if (!$file->isFile() || $file->getExtension() !== 'php') {
             throw new NotAPhpFileException($file);
         }
 
