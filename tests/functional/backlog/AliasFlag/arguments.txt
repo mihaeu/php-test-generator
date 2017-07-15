@@ -1,0 +1,1 @@
+--alias='ClassA,B' --alias='PHPUnit_Framework_MockObject_MockObject,Mock'

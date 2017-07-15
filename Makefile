@@ -52,13 +52,13 @@ phpstan:
 	@$(PHP_NO_INI) vendor/bin/phpstan analyse src tests/unit --level=4 -c phpstan.neon
 
 phpmd:
-	@$(PHP_NO_INI) vendor/bin/phpmd
+	@$(PHP_NO_INI) vendor/bin/phpmd src,tests/unit text cleancode,codesize,controversial,design,naming,unusedcode
 
 phpcs:
-	@$(PHP_NO_INI) vendor/bin/phpcs --standard=PSR2 src tests
+	@$(PHP_NO_INI) vendor/bin/phpcs --standard=PSR2 src tests/unit
 
 phpcbf:
-	@$(PHP_NO_INI) vendor/bin/phpcbf --standard=PSR2 src tests
+	@$(PHP_NO_INI) vendor/bin/phpcbf --standard=PSR2 src tests/unit
 
 c: cov
 

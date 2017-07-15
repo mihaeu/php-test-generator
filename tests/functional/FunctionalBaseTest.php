@@ -23,25 +23,34 @@ class FunctionalBaseTest extends TestCase
     /**
      * @dataProvider provideFixtures
      */
-    public function testGenerateSimplePhpUnitTestCase(string $source, string $expected, string $message) : void
+    public function testGenerateSimplePhpUnitTestCase(string $source, string $expected, string $arguments, string $message) : void
     {
-        $actual = shell_exec(self::TEST_GENERATOR_BINARY . ' ' .$this->generateTestFile($source));
+        $cmd = self::TEST_GENERATOR_BINARY . ' ' . $arguments . ' ' . $this->generateTestFile($source);
+        $actual = shell_exec($cmd);
         assertEquals($expected, $actual, $message);
     }
 
     public function provideFixtures() : array
     {
         $dir = __DIR__;
-        $fixtures = array_filter(scandir($dir . '/fixtures'), function (string $dirname) use ($dir) {
-            return is_dir($dir . '/fixtures/' . $dirname)
-                && strpos($dirname, '.') !== 0;
-        });
+        $fixtures = array_filter(
+            scandir($dir . '/fixtures', SCANDIR_SORT_ASCENDING),
+            function (string $dirname) use ($dir) {
+                return is_dir($dir . '/fixtures/' . $dirname)
+                    && strpos($dirname, '.') !== 0;
+            }
+        );
 
         $testArguments = [];
         foreach ($fixtures as $fixtureDir) {
+            $fixtureDir = $dir . '/fixtures/' . $fixtureDir;
+            $arguments = fileExists($fixtureDir . '/arguments.txt')
+                ? str_replace(["\n", "\r"], ' ', file_get_contents($fixtureDir . '/arguments.txt'))
+                : '';
             $testArguments[] = [
-                file_get_contents($dir . '/fixtures/' . $fixtureDir . '/source.php'),
-                file_get_contents($dir . '/fixtures/' . $fixtureDir . '/expected.php'),
+                file_get_contents($fixtureDir . '/source.php'),
+                file_get_contents($fixtureDir . '/expected.php'),
+                $arguments,
                 $this->camelCaseToReadable($fixtureDir),
             ];
         }
