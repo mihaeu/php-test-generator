@@ -17,9 +17,6 @@ checks: phpstan phpcs
 check-reqs:
 	@echo "Verifying dev dependencies are installed ..."
 	@test -f box.phar || { echo >&2 "Box is not installed locally"; exit 1; }
-	@test -f phpcs.phar || { echo >&2 "PHP_CodeSniffer is not installed locally"; exit 2; }
-	@test -f phpstan.phar || { echo >&2 "PHPStan is not installed locally"; exit 3; }
-	@test -f phpmd.phar || { echo >&2 "PHP Mess Detector is not installed locally"; exit 4; }
 	@echo Ok.
 
 cov:
@@ -52,16 +49,16 @@ phar:
 	@composer update
 
 phpstan:
-	@$(PHP_NO_INI) phpstan.phar analyse src tests/unit --level=4 -c phpstan.neon
+	@$(PHP_NO_INI) vendor/bin/phpstan analyse src tests/unit --level=4 -c phpstan.neon
 
 phpmd:
-	@$(PHP_NO_INI) phpmd.phar
+	@$(PHP_NO_INI) vendor/bin/phpmd
 
 phpcs:
-	@$(PHP_NO_INI) phpcs.phar --standard=PSR2 src tests
+	@$(PHP_NO_INI) vendor/bin/phpcs --standard=PSR2 src tests
 
 phpcbf:
-	@$(PHP_NO_INI) phpcbf.phar --standard=PSR2 src tests
+	@$(PHP_NO_INI) vendor/bin/phpcbf --standard=PSR2 src tests
 
 c: cov
 
