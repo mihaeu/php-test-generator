@@ -103,10 +103,6 @@ class ClassAnalyser extends NodeVisitorAbstract
             return $default->value ? 'true' : 'false';
         }
 
-        if ($default->value === '[]') {
-            return '[]';
-        }
-
         if (is_string($default->value)) {
             return "'" . $default->value . "'";
         }

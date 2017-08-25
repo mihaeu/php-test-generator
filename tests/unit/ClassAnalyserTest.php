@@ -224,10 +224,6 @@ class ClassAnalyserTest extends TestCase
             return null;
         }
 
-        if ($default === self::TYPE_ARRAY) {
-            return $this->createMock(Array_::class);
-        }
-
         if (preg_match(self::REGEX_FLOAT, $default)) {
             $float = $this->createMock(DNumber::class);
             $float->value = (float) $default;
@@ -244,6 +240,10 @@ class ClassAnalyserTest extends TestCase
             $bool = $this->createMock(ConstFetch::class);
             $bool->value = $default === self::TYPE_BOOL_TRUE;
             return $bool;
+        }
+
+        if ($default === '[]') {
+            return $this->createMock(Array_::class);
         }
 
         if (is_string($default)) {
