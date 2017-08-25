@@ -24,7 +24,6 @@ class ClassAnalyserTest extends TestCase
     private const REGEX_INT = '/^\d+$/';
     private const TYPE_BOOL_TRUE = 'true';
     private const TYPE_BOOL_FALSE = 'false';
-    private const TYPE_ARRAY = 'array';
 
     /** @var ClassAnalyser */
     private $classAnalyser;
@@ -127,6 +126,12 @@ class ClassAnalyserTest extends TestCase
                 'expected' => self::TYPE_BOOL_TRUE,
             ],
             [
+                'message' => 'No type with TRUE default',
+                'type' => null,
+                'default' => 'TRUE',
+                'expected' => self::TYPE_BOOL_TRUE,
+            ],
+            [
                 'message' => 'No type with false default',
                 'type' => null,
                 'default' => self::TYPE_BOOL_FALSE,
@@ -165,7 +170,7 @@ class ClassAnalyserTest extends TestCase
             [
                 'message' => 'No type with string default',
                 'type' => null,
-                'default' => 'string',
+                'default' => '"string"',
                 'expected' => "'string'",
             ],
             [
@@ -179,6 +184,12 @@ class ClassAnalyserTest extends TestCase
                 'type' => null,
                 'default' => '[]',
                 'expected' => '[]',
+            ],
+            [
+                'message' => 'No type with defined global constant',
+                'type' => null,
+                'default' => 'SOME_CONST',
+                'expected' => 'SOME_CONST',
             ],
         ];
     }
@@ -236,9 +247,15 @@ class ClassAnalyserTest extends TestCase
             return $int;
         }
 
-        if ($default === self::TYPE_BOOL_TRUE || $default === self::TYPE_BOOL_FALSE) {
+        if ($default === self::TYPE_BOOL_TRUE
+            || $default === self::TYPE_BOOL_FALSE
+            || $default === 'TRUE'
+            || $default === 'FALSE'
+        ) {
             $bool = $this->createMock(ConstFetch::class);
-            $bool->value = $default === self::TYPE_BOOL_TRUE;
+            $bool->value = stripos($default, self::TYPE_BOOL_TRUE) !== false;
+            $bool->name = $this->createMock(Name::class);
+            $bool->name->method('toString')->willReturn($default);
             return $bool;
         }
 
@@ -246,12 +263,15 @@ class ClassAnalyserTest extends TestCase
             return $this->createMock(Array_::class);
         }
 
-        if (is_string($default)) {
+        if (preg_match('/^[\'"]/', $default)) {
             $string = $this->createMock(String_::class);
-            $string->value = $default;
+            $string->value = trim($default, '\'""');
             return $string;
         }
 
-        return $this->createMock(ClassConstFetch::class);
+        $const = $this->createMock(ConstFetch::class);
+        $const->name = $this->createMock(Name::class);
+        $const->name->method('toString')->willReturn($default);
+        return $const;
     }
 }

@@ -10,6 +10,8 @@ class A {
         $otherInt = 999,
         $otherFloat = 3.1415,
         $xs = [],
-        array $array
+        array $array,
+        $caseInsensitive = TRUE,
+        $fixed = PHP_EOL
     ) {}
 }

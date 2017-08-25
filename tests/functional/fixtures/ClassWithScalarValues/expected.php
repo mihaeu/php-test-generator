@@ -34,6 +34,12 @@ class ATest extends TestCase
     /** @var array */
     private $array;
 
+    /** @var bool */
+    private $caseInsensitive;
+
+    /** @var mixed */
+    private $fixed;
+
     protected function setUp()
     {
         $this->x = null;
@@ -45,6 +51,8 @@ class ATest extends TestCase
         $this->otherFloat = 3.1415;
         $this->xs = [];
         $this->array = [];
+        $this->caseInsensitive = true;
+        $this->fixed = PHP_EOL;
         $this->a = new A(
             $this->x,
             $this->bool,
@@ -54,7 +62,9 @@ class ATest extends TestCase
             $this->otherInt,
             $this->otherFloat,
             $this->xs,
-            $this->array
+            $this->array,
+            $this->caseInsensitive,
+            $this->fixed
         );
     }
 

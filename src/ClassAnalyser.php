@@ -99,8 +99,11 @@ class ClassAnalyser extends NodeVisitorAbstract
 
     private function defaultToString(Expr $default) : string
     {
-        if (is_bool($default->value)) {
-            return $default->value ? 'true' : 'false';
+        if ($default instanceof Expr\ConstFetch) {
+            if (preg_match('/(false|true)/i', $default->name->toString())) {
+                return strtolower($default->name->toString());
+            }
+            return $default->name->toString();
         }
 
         if (is_string($default->value)) {
@@ -126,6 +129,12 @@ class ClassAnalyser extends NodeVisitorAbstract
 
         if ($parameter->default instanceof Node\Scalar\String_) {
             return 'string';
+        }
+
+        if ($parameter->default instanceof Expr\ConstFetch
+            && preg_match('/(true|false)/i', $parameter->default->name->toString())
+        ) {
+            return 'bool';
         }
 
         return null;
