@@ -7,26 +7,32 @@ class ATest extends TestCase
     /** @var A */
     private $a;
 
-    /** @var mixed | PHPUnit_Framework_MockObject_MockObject */
+    /** @var mixed */
     private $x;
 
-    /** @var bool | PHPUnit_Framework_MockObject_MockObject */
+    /** @var bool */
     private $bool;
 
-    /** @var int | PHPUnit_Framework_MockObject_MockObject */
+    /** @var int */
     private $int;
 
-    /** @var string | PHPUnit_Framework_MockObject_MockObject */
+    /** @var string */
     private $string;
 
-    /** @var mixed | PHPUnit_Framework_MockObject_MockObject */
+    /** @var string */
     private $otherString;
 
-    /** @var mixed | PHPUnit_Framework_MockObject_MockObject */
+    /** @var int */
     private $otherInt;
 
-    /** @var mixed | PHPUnit_Framework_MockObject_MockObject */
+    /** @var float */
     private $otherFloat;
+
+    /** @var array */
+    private $xs;
+
+    /** @var array */
+    private $array;
 
     protected function setUp()
     {
@@ -37,6 +43,8 @@ class ATest extends TestCase
         $this->otherString = 'abc';
         $this->otherInt = 999;
         $this->otherFloat = 3.1415;
+        $this->xs = [];
+        $this->array = [];
         $this->a = new A(
             $this->x,
             $this->bool,
@@ -44,7 +52,9 @@ class ATest extends TestCase
             $this->string,
             $this->otherString,
             $this->otherInt,
-            $this->otherFloat
+            $this->otherFloat,
+            $this->xs,
+            $this->array
         );
     }
 

@@ -5,7 +5,6 @@ namespace Mihaeu\TestGenerator;
 use PhpParser\Node;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Param;
-use PhpParser\Node\Scalar;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\NodeVisitorAbstract;
 
@@ -16,6 +15,7 @@ class ClassAnalyser extends NodeVisitorAbstract
     private const TYPE_DEFAULT_FLOAT = '0.0';
     private const TYPE_DEFAULT_INT = '0';
     private const TYPE_DEFAULT_BOOL = 'false';
+    private const TYPE_DEFAULT_ARRAY = '[]';
 
     /** @var array */
     private $parameters = [];
@@ -53,6 +53,10 @@ class ClassAnalyser extends NodeVisitorAbstract
 
     private function generateDefault(Param $parameter) : ?string
     {
+        if ($parameter->default instanceof Expr\Array_) {
+            return self::TYPE_DEFAULT_ARRAY;
+        }
+
         if ($parameter->default) {
             return $this->defaultToString($parameter->default);
         }
@@ -73,6 +77,10 @@ class ClassAnalyser extends NodeVisitorAbstract
             return self::TYPE_DEFAULT_BOOL;
         }
 
+        if ($parameter->type === 'array') {
+            return self::TYPE_DEFAULT_ARRAY;
+        }
+
         return null;
     }
 
@@ -81,13 +89,22 @@ class ClassAnalyser extends NodeVisitorAbstract
         if (is_string($parameter->type)) {
             return $parameter->type;
         }
-        return $parameter->type ? $parameter->type->toString() : null;
+
+        if ($parameter->type) {
+            return $parameter->type->toString();
+        }
+
+        return $this->guessTypeFromDefault($parameter);
     }
 
-    private function defaultToString(?Expr $default) : string
+    private function defaultToString(Expr $default) : string
     {
         if (is_bool($default->value)) {
             return $default->value ? 'true' : 'false';
+        }
+
+        if ($default->value === '[]') {
+            return '[]';
         }
 
         if (is_string($default->value)) {
@@ -95,5 +112,26 @@ class ClassAnalyser extends NodeVisitorAbstract
         }
 
         return (string) $default->value;
+    }
+
+    private function guessTypeFromDefault(Param $parameter) : ?string
+    {
+        if ($parameter->default instanceof Expr\Array_) {
+            return 'array';
+        }
+
+        if ($parameter->default instanceof Node\Scalar\LNumber) {
+            return 'int';
+        }
+
+        if ($parameter->default instanceof Node\Scalar\DNumber) {
+            return 'float';
+        }
+
+        if ($parameter->default instanceof Node\Scalar\String_) {
+            return 'string';
+        }
+
+        return null;
     }
 }

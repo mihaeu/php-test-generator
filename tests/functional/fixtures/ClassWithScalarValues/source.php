@@ -8,6 +8,8 @@ class A {
         string $string,
         $otherString = 'abc',
         $otherInt = 999,
-        $otherFloat = 3.1415
+        $otherFloat = 3.1415,
+        $xs = [],
+        array $array
     ) {}
 }

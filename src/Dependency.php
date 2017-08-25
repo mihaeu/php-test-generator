@@ -38,4 +38,14 @@ class Dependency
     {
         return $this->value;
     }
+
+    public function isScalar() : bool
+    {
+        return $this->type === 'bool'
+            || $this->type === 'int'
+            || $this->type === 'float'
+            || $this->type === 'array'
+            || $this->type === 'string'
+            || $this->type === null;
+    }
 }

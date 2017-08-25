@@ -10,7 +10,7 @@ class FunctionalBaseTest extends TestCase
 {
     const TEST_GENERATOR = __DIR__ . '/../../bin/test-generator';
     const TEST_GENERATOR_BINARY = PHP_BINARY . ' ' . self::TEST_GENERATOR;
-    private const FIXTURES_DIR = '/fixtures';
+    private const FIXTURES_DIR = __DIR__ . '/fixtures';
 
     /** @var string */
     private $currentTestFileFilename;
@@ -34,18 +34,9 @@ class FunctionalBaseTest extends TestCase
 
     public function provideFixtures() : array
     {
-        $dir = __DIR__;
-        $fixtures = array_filter(
-            scandir($dir . self::FIXTURES_DIR, SCANDIR_SORT_ASCENDING),
-            function (string $dirname) use ($dir) {
-                return is_dir($dir . self::FIXTURES_DIR . DIRECTORY_SEPARATOR . $dirname)
-                    && strpos($dirname, '.') !== 0;
-            }
-        );
-
         $testArguments = [];
-        foreach ($fixtures as $fixtureDir) {
-            $fixtureDir = $dir . self::FIXTURES_DIR . DIRECTORY_SEPARATOR . $fixtureDir;
+        foreach ($this->findFixtures() as $fixtureDir) {
+            $fixtureDir = self::FIXTURES_DIR . DIRECTORY_SEPARATOR . $fixtureDir;
             $arguments = file_exists($fixtureDir . '/arguments.txt')
                 ? str_replace(["\n", "\r"], ' ', file_get_contents($fixtureDir . '/arguments.txt'))
                 : '';
@@ -72,6 +63,17 @@ class FunctionalBaseTest extends TestCase
             trim(
                 preg_replace('/[A-Z]/', ' $1', $camelCaseText)
             )
+        );
+    }
+
+    private function findFixtures(): array
+    {
+        return array_filter(
+            scandir(self::FIXTURES_DIR, SCANDIR_SORT_ASCENDING),
+            function (string $dirname) {
+                return is_dir(self::FIXTURES_DIR . DIRECTORY_SEPARATOR . $dirname)
+                    && strpos($dirname, '.') !== 0;
+            }
         );
     }
 }

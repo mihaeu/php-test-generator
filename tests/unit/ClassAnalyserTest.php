@@ -2,6 +2,7 @@
 
 namespace Mihaeu\TestGenerator;
 
+use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Name;
@@ -19,6 +20,12 @@ use PHPUnit_Framework_TestCase as TestCase;
  */
 class ClassAnalyserTest extends TestCase
 {
+    private const REGEX_FLOAT = '/^\d+\.\d+$/';
+    private const REGEX_INT = '/^\d+$/';
+    private const TYPE_BOOL_TRUE = 'true';
+    private const TYPE_BOOL_FALSE = 'false';
+    private const TYPE_ARRAY = 'array';
+
     /** @var ClassAnalyser */
     private $classAnalyser;
 
@@ -95,17 +102,84 @@ class ClassAnalyserTest extends TestCase
     public function parameterProvider() : array
     {
         return [
-            ['message' => 'Object without default',        'type' => 'ArrayObject',    'default' => null,       'expected' => ''],
-            ['message' => 'No arguments',                  'type' => null,             'default' => null,       'expected' => null],
-            ['message' => 'Bool with no default',          'type' => 'bool',           'default' => null,       'expected' => 'false'],
-            ['message' => 'No type with true default',     'type' => null,             'default' => 'true',     'expected' => 'true'],
-            ['message' => 'No type with false default',    'type' => null,             'default' => 'false',    'expected' => 'false'],
-            ['message' => 'Int with no default',           'type' => 'int',            'default' => null,       'expected' => '0'],
-            ['message' => 'No type with int default',      'type' => null,             'default' => '123',      'expected' => '123'],
-            ['message' => 'Float type with no default',    'type' => 'float',          'default' => null,       'expected' => '0.0'],
-            ['message' => 'No type with float default',    'type' => null,             'default' => '3.1415',   'expected' => '3.1415'],
-            ['message' => 'String with no default',        'type' => 'string',         'default' => null,       'expected' => "''"],
-            ['message' => 'No type with string default',   'type' => null,             'default' => 'string',   'expected' => "'string'"],
+            [
+                'message' => 'Object without default',
+                'type' => 'ArrayObject',
+                'default' => null,
+                'expected' => '',
+            ],
+            [
+                'message' => 'No arguments',
+                'type' => null,
+                'default' => null,
+                'expected' => null,
+            ],
+            [
+                'message' => 'Bool with no default',
+                'type' => 'bool',
+                'default' => null,
+                'expected' => self::TYPE_BOOL_FALSE,
+            ],
+            [
+                'message' => 'No type with true default',
+                'type' => null,
+                'default' => self::TYPE_BOOL_TRUE,
+                'expected' => self::TYPE_BOOL_TRUE,
+            ],
+            [
+                'message' => 'No type with false default',
+                'type' => null,
+                'default' => self::TYPE_BOOL_FALSE,
+                'expected' => self::TYPE_BOOL_FALSE,
+            ],
+            [
+                'message' => 'Int with no default',
+                'type' => 'int',
+                'default' => null,
+                'expected' => '0',
+            ],
+            [
+                'message' => 'No type with int default',
+                'type' => null,
+                'default' => '123',
+                'expected' => '123',
+            ],
+            [
+                'message' => 'Float type with no default',
+                'type' => 'float',
+                'default' => null,
+                'expected' => '0.0',
+            ],
+            [
+                'message' => 'No type with float default',
+                'type' => null,
+                'default' => '3.1415',
+                'expected' => '3.1415',
+            ],
+            [
+                'message' => 'String with no default',
+                'type' => 'string',
+                'default' => null,
+                'expected' => "''",
+            ],
+            [
+                'message' => 'No type with string default',
+                'type' => null,
+                'default' => 'string',
+                'expected' => "'string'",
+            ],
+            [
+                'message' => 'Array type with no default',
+                'type' => 'array',
+                'default' => null,
+                'expected' => '[]',
+            ],
+            [
+                'message' => 'No type with array default',
+                'type' => null,
+                'default' => '[]',
+                'expected' => '[]',
+            ],
         ];
     }
 
@@ -134,6 +208,7 @@ class ClassAnalyserTest extends TestCase
             || $typeDefinition === 'double'
             || $typeDefinition === 'int'
             || $typeDefinition === 'string'
+            || $typeDefinition === 'array'
         ) {
             return $typeDefinition;
         }
@@ -149,21 +224,25 @@ class ClassAnalyserTest extends TestCase
             return null;
         }
 
-        if (preg_match('/^\d+\.\d+$/', $default)) {
+        if ($default === self::TYPE_ARRAY) {
+            return $this->createMock(Array_::class);
+        }
+
+        if (preg_match(self::REGEX_FLOAT, $default)) {
             $float = $this->createMock(DNumber::class);
             $float->value = (float) $default;
             return $float;
         }
 
-        if (preg_match('/^\d+$/', $default)) {
+        if (preg_match(self::REGEX_INT, $default)) {
             $int = $this->createMock(LNumber::class);
             $int->value = (int) $default;
             return $int;
         }
 
-        if ($default === 'true' || $default === 'false') {
+        if ($default === self::TYPE_BOOL_TRUE || $default === self::TYPE_BOOL_FALSE) {
             $bool = $this->createMock(ConstFetch::class);
-            $bool->value = $default === 'true';
+            $bool->value = $default === self::TYPE_BOOL_TRUE;
             return $bool;
         }
 
@@ -173,7 +252,6 @@ class ClassAnalyserTest extends TestCase
             return $string;
         }
 
-        $constant = $this->createMock(ClassConstFetch::class);
-        return $constant;
+        return $this->createMock(ClassConstFetch::class);
     }
 }
