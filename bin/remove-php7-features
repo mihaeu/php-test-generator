@@ -1,0 +1,135 @@
+#!/usr/bin/env php
+<?php
+
+require __DIR__ . '/../vendor/autoload.php';
+
+use PhpParser\Node;
+use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\MethodCall;
+use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Name;
+use PhpParser\Node\Stmt\ClassConst;
+use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\Node\Stmt\Declare_;
+use PhpParser\Node\Stmt\Function_;
+use PhpParser\NodeVisitorAbstract;
+use PhpParser\ParserFactory;
+use PhpParser\PrettyPrinter;
+use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor\NameResolver;
+
+$description = <<<EOT
+PHP7-Type-Declaration-Remover
+
+Usage:
+  remove-php7-features <input-file> [<output-file>] [--write]
+EOT;
+
+class Php7FeatureRemover extends NodeVisitorAbstract
+{
+    private const INVALID_PARAM_TYPES = [
+        'bool',
+        'int',
+        'string',
+        'float',
+        'boolean',
+        'double',
+        'iterable',
+    ];
+
+    public function leaveNode(Node $node) {
+        if ($node instanceof ClassMethod || $node instanceof Function_) {
+            foreach ($node->params as &$param) {
+                if (in_array($param->type, self::INVALID_PARAM_TYPES, true)) {
+                    $param->type = null;
+                }
+                if ($param->variadic) {
+                    $param->variadic = false;
+                    $node->stmts = array_merge(
+                        [],
+                        $node->stmts
+                    );
+                }
+            }
+            $node->returnType = null;
+        } else if ($node instanceof Declare_) {
+            return NodeTraverser::REMOVE_NODE;
+        } else if ($node instanceof ClassConst) {
+            $node->flags = 0;
+        } else if ($node instanceof FuncCall && $this->containsSplatOperator($node)) {
+
+        } else if ($node instanceof StaticCall && $this->containsSplatOperator($node)) {
+
+        } else if ($node instanceof MethodCall && $this->containsSplatOperator($node)) {
+            echo $node->name;
+        }
+        return null;
+    }
+
+    private function containsSplatOperator(Node $node) : bool
+    {
+        foreach ($node->args ?? [] as $arg) {
+            if ($arg->unpack === true) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private function createSplatReplacement($a) : FuncCall
+    {
+        $callable = [];
+        $arguments = [];
+        return new FuncCall(
+            new Name('call_user_func_array'),
+            [$callable, $arguments]
+        );
+    }
+}
+
+function main(\Docopt\Response $args): void
+{
+    $inputFile = $args['<input-file>'];
+    $outputFile = $args['<output-file>'] ?? '/dev/stdout';
+
+    if (!is_file($inputFile)
+        || !is_readable($inputFile)
+    ) {
+        echo 'Input file is not a file or not readable' . PHP_EOL;
+        exit(1);
+    }
+
+    if ($args['--write']) {
+        $outputFile = $inputFile;
+    }
+
+    if ($outputFile === null
+        && !is_writable($outputFile)
+        && !is_writable(dirname($outputFile))) {
+        echo 'Output file is not writable' . PHP_EOL;
+        exit(1);
+    }
+
+    $parser = (new ParserFactory)->create(ParserFactory::PREFER_PHP7);
+    $traverser = new NodeTraverser;
+    $prettyPrinter = new PrettyPrinter\Standard;
+
+    $traverser->addVisitor(new NameResolver);
+    $traverser->addVisitor(new Php7FeatureRemover);
+
+    try {
+        $code = file_get_contents($inputFile);
+        $stmts = $traverser->traverse($parser->parse($code));
+        $code = $prettyPrinter->prettyPrintFile($stmts);
+
+        file_put_contents($outputFile, $code);
+    } catch (PhpParser\Error $e) {
+        echo 'Parse Error: ' . $e->getMessage() . PHP_EOL;
+        exit(2);
+    } catch (Exception $exception) {
+        echo 'Something went wrong.' . PHP_EOL;
+        exit(3);
+    }
+}
+
+main(Docopt::handle($description));
