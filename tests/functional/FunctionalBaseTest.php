@@ -8,7 +8,9 @@ use PHPUnit_Framework_TestCase as TestCase;
 
 class FunctionalBaseTest extends TestCase
 {
-    const TEST_GENERATOR_BINARY = PHP_BINARY . ' ' . __DIR__ . '/../../bin/test-generator';
+    const TEST_GENERATOR = __DIR__ . '/../../bin/test-generator';
+    const TEST_GENERATOR_BINARY = PHP_BINARY . ' ' . self::TEST_GENERATOR;
+    private const FIXTURES_DIR = '/fixtures';
 
     /** @var string */
     private $currentTestFileFilename;
@@ -34,17 +36,17 @@ class FunctionalBaseTest extends TestCase
     {
         $dir = __DIR__;
         $fixtures = array_filter(
-            scandir($dir . '/fixtures', SCANDIR_SORT_ASCENDING),
+            scandir($dir . self::FIXTURES_DIR, SCANDIR_SORT_ASCENDING),
             function (string $dirname) use ($dir) {
-                return is_dir($dir . '/fixtures/' . $dirname)
+                return is_dir($dir . self::FIXTURES_DIR . DIRECTORY_SEPARATOR . $dirname)
                     && strpos($dirname, '.') !== 0;
             }
         );
 
         $testArguments = [];
         foreach ($fixtures as $fixtureDir) {
-            $fixtureDir = $dir . '/fixtures/' . $fixtureDir;
-            $arguments = fileExists($fixtureDir . '/arguments.txt')
+            $fixtureDir = $dir . self::FIXTURES_DIR . DIRECTORY_SEPARATOR . $fixtureDir;
+            $arguments = file_exists($fixtureDir . '/arguments.txt')
                 ? str_replace(["\n", "\r"], ' ', file_get_contents($fixtureDir . '/arguments.txt'))
                 : '';
             $testArguments[] = [

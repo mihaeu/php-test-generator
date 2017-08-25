@@ -16,7 +16,7 @@ Test-Generator
 Usage:
   test-generator <file>
 EOT;
-$args = Docopt::handle($description);
+$args = Docopt::handle($description, $argv);
 
 try {
     $testGenerator = new TestGenerator(

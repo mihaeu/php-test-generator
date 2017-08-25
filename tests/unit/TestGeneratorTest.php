@@ -81,9 +81,9 @@ EOT;
         $this->parser->method('parse')->willReturn([]);
         $this->classAnalyser->method('getClass')->willReturn('X');
         $this->classAnalyser->method('getParameters')->willReturn([
-            'a' => 'A',
-            'b' => 'B',
-            'c' => 'C',
+            'a' => new Dependency('a', 'A'),
+            'b' => new Dependency('b', 'B'),
+            'c' => new Dependency('c', 'C'),
         ]);
 
         $file = $this->createMock(PhpFile::class);
@@ -128,5 +128,16 @@ class XTest extends TestCase
 
 EOT;
         assertEquals($expected, $this->testGenerator->run($file));
+    }
+
+    public function testReturnsEmptyStringForFileWithoutClass() : void
+    {
+        $emptyFile = $this->createMock(PhpFile::class);
+        $emptyFile->method('content')->willReturn('');
+
+        $this->parser->method('parse')->willReturn([]);
+        $this->classAnalyser->method('getClass')->willReturn(null);
+
+        assertEmpty($this->testGenerator->run($emptyFile));
     }
 }

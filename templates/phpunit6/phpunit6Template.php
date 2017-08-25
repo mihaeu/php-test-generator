@@ -16,8 +16,8 @@ class <?= $class ?>Test extends TestCase
     private $<?= lcfirst($class) ?>;
 
 <?php if (!empty($parameters)) : ?>
-<?php foreach ($parameters as $name => $type) : ?>
-    /** @var <?= $type ?> | PHPUnit_Framework_MockObject_MockObject */
+<?php foreach ($parameters as $name => $dependency) : ?>
+    /** @var <?= $dependency->type() ?? 'mixed' ?> | PHPUnit_Framework_MockObject_MockObject */
     private $<?= $name ?>;
 
 <?php endforeach; ?>
@@ -27,8 +27,14 @@ class <?= $class ?>Test extends TestCase
 <?php if (empty($parameters)) :?>
         $this-><?= lcfirst($class) ?> = new <?= $class ?>();
 <?php else : ?>
-<?php foreach ($parameters as $name => $type) : ?>
-        $this-><?= $name ?> = $this->createMock(<?= $type ?>::class);
+<?php foreach ($parameters as $name => $dependency) : ?>
+<?php if ($dependency->value() !== null) : ?>
+        $this-><?= $name ?> = <?= $dependency->value() ?>;
+<?php elseif (!$dependency->type()) : ?>
+        $this-><?= $name ?> = null;
+<?php else : ?>
+        $this-><?= $name ?> = $this->createMock(<?= $dependency->type() ?>::class);
+<?php endif; ?>
 <?php endforeach; ?>
         $this-><?= lcfirst($class) ?> = new <?= $class ?>(
             <?= implode(",\n            ", array_map(function ($x) {return '$this->'.$x;}, array_keys($parameters))) ?>
