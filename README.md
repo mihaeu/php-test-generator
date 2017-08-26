@@ -1,6 +1,8 @@
 # 🔧 Test Generator 🔨
 
 [![Travis branch](https://img.shields.io/travis/mihaeu/php-test-generator/develop.svg)](https://travis-ci.org/mihaeu/php-test-generator)
+[![Codecov branch](https://img.shields.io/codecov/c/github/mihaeu/php-test-generator/develop.svg)](https://codecov.io/gh/mihaeu/php-test-generator)
+![](https://img.shields.io/badge/PHP-7.1-blue.svg)
 
 > Generate test cases for existing files
 
