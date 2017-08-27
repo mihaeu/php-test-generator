@@ -49,10 +49,10 @@ phar:
 	@composer update --no-dev
 	@$(PHP) box.phar build
 	@chmod +x build/test-generator.phar
-	@composer update
+	@composer install
 
 phar55: backport phar
-	git checkout -- .
+	git checkout -- src
 
 phpstan:
 	@$(PHP_NO_INI) vendor/bin/phpstan analyse src tests/unit --level=4 -c phpstan.neon

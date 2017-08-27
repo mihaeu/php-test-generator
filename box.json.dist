@@ -1,5 +1,5 @@
 {
-    "directories": ["src/", "vendor/"],
+    "directories": ["src/", "vendor/", "templates/"],
     "main": "bin/test-generator",
     "output": "build/test-generator.phar",
     "stub": true
