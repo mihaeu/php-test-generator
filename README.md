@@ -2,7 +2,10 @@
 
 [![Travis branch](https://img.shields.io/travis/mihaeu/php-test-generator/develop.svg)](https://travis-ci.org/mihaeu/php-test-generator)
 [![Codecov branch](https://img.shields.io/codecov/c/github/mihaeu/php-test-generator/develop.svg)](https://codecov.io/gh/mihaeu/php-test-generator)
-![](https://img.shields.io/badge/PHP-7.1-blue.svg)
+![](https://img.shields.io/badge/PHP-7.1-brightgreen.svg)
+![](https://img.shields.io/badge/PHP-7.0-yellow.svg)
+![](https://img.shields.io/badge/PHP-5.6-yellow.svg)
+![](https://img.shields.io/badge/PHP-5.5-yellow.svg)
 
 > Generate test cases for existing files
 
@@ -21,6 +24,27 @@ Usage:
 
 ## Installation
 
+### Composer (PHP 7.1+)
+
+```bash
+# local install
+composer require "mihaeu/test-generator:^1.0"
+
+# global install
+composer global require "mihaeu/test-generator:^1.0"
+```
+
+### Phar (PHP 5.5+)
+
+Since I actually need to use this on 5.5 legacy projects (should work with 5.4 as well, but didn't test for it), I also release a phar file which works for older versions:
+
+```bash
+wget https://github.com/mihaeu/php-test-generator/releases/download/1.0.0/test-generator-1.0.0.phar
+chmod +x test-generator-1.0.0.phar
+```
+
+**Please note that by doing this we should be disgusted at ourselves for not upgrading to PHP 7.1 (soon 7.2).**
+
 ### Git
 
 ```bash
@@ -29,6 +53,8 @@ cd php-test-generator
 composer install
 bin/test-generator --help
 ```
+
+If you don't have PHP 7.1 installed you can run `bin/remove-php7-features` to convert the source files. I won't however except pull requests without PHP 7.1 support.
 
 ## Example
 
