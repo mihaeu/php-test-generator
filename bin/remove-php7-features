@@ -27,7 +27,7 @@ EOT;
 
 class Php7FeatureRemover extends NodeVisitorAbstract
 {
-    private const INVALID_PARAM_TYPES = [
+    private static $INVALID_PARAM_TYPES = [
         'bool',
         'int',
         'string',
@@ -40,7 +40,7 @@ class Php7FeatureRemover extends NodeVisitorAbstract
     public function leaveNode(Node $node) {
         if ($node instanceof ClassMethod || $node instanceof Function_) {
             foreach ($node->params as &$param) {
-                if (in_array($param->type, self::INVALID_PARAM_TYPES, true)) {
+                if (in_array($param->type, self::$INVALID_PARAM_TYPES, true)) {
                     $param->type = null;
                 }
                 if ($param->variadic) {
@@ -68,9 +68,9 @@ class Php7FeatureRemover extends NodeVisitorAbstract
         return null;
     }
 
-    private function containsSplatOperator(Node $node) : bool
+    private function containsSplatOperator(Node $node)
     {
-        foreach ($node->args ?? [] as $arg) {
+        foreach ($node->args ?: [] as $arg) {
             if ($arg->unpack === true) {
                 return true;
             }
@@ -78,7 +78,7 @@ class Php7FeatureRemover extends NodeVisitorAbstract
         return false;
     }
 
-    private function createSplatReplacement($a) : FuncCall
+    private function createSplatReplacement($a)
     {
         $callable = [];
         $arguments = [];
@@ -89,10 +89,10 @@ class Php7FeatureRemover extends NodeVisitorAbstract
     }
 }
 
-function main(\Docopt\Response $args): void
+function main(\Docopt\Response $args)
 {
     $inputFile = $args['<input-file>'];
-    $outputFile = $args['<output-file>'] ?? '/dev/stdout';
+    $outputFile = $args['<output-file>'] ?: '/dev/stdout';
 
     if (!is_file($inputFile)
         || !is_readable($inputFile)
