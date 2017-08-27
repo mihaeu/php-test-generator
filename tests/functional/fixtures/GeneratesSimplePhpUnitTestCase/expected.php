@@ -1,5 +1,7 @@
 <?php declare(strict_types = 1);
 
+namespace First\Second;
+
 use PHPUnit\Framework\TestCase;
 
 class ATest extends TestCase

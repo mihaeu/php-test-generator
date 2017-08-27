@@ -1,5 +1,9 @@
 <?php{% if not php5 %} declare(strict_types = 1);{% endif %}
 
+{% if namespace %}
+
+namespace {{ namespace }};
+{% endif %}
 
 {% if mockery %}
 use Mockery;
@@ -13,7 +17,7 @@ use PHPUnit\Framework\TestCase;
 
 {% if covers %}
 /**
- * @covers {{ class }}
+ * @covers {{ namespacedName }}
  */
 {% endif %}
 class {{ class }}Test extends TestCase
@@ -26,8 +30,7 @@ class {{ class }}Test extends TestCase
     private ${{ dependency.name }};
 
 {% endfor %}
-    protected function setUp(){% if php7 %} : void{% endif %}
-
+    protected function setUp()
     {
 {% for dependency in dependencies %}
 {% if not dependency.value|isNull %}
@@ -48,8 +51,7 @@ class {{ class }}Test extends TestCase
         );
     }
 
-    public function testMissing{% if php7 %}() : void{% else %}(){% endif %}
-
+    public function testMissing()
     {
         $this->fail('Test not yet implemented');
     }
