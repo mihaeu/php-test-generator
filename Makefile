@@ -43,7 +43,7 @@ testdox:
 	 | sed -r 's/(^[^ ].+)/$(WARN_COLOR)\1$(NO_COLOR)/'
 
 backport:
-	$(PHP_NO_INI) bin/remove-php7-features
+	find src -iname '*.php' -exec bin/remove-php7-features --write {} \;
 
 phar:
 	@composer update --no-dev
