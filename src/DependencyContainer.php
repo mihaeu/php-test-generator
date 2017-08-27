@@ -34,9 +34,9 @@ class DependencyContainer
         return $twig;
     }
 
-    public function twigRenderer() : TwigRenderer
+    public function twigRenderer(bool $php5 = false, bool $phpunit5 = false) : TwigRenderer
     {
-        return new TwigRenderer($this->twigEnvironment());
+        return new TwigRenderer($this->twigEnvironment(), $php5, $phpunit5);
     }
 
     public function parser() : Parser

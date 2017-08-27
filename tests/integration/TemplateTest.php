@@ -16,7 +16,9 @@ class TemplateTest extends TestCase
     protected function setUp()
     {
         $this->twigRenderer = new TwigRenderer(
-            (new DependencyContainer())->twigEnvironment()
+            (new DependencyContainer())->twigEnvironment(),
+            false,
+            false
         );
     }
 
