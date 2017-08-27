@@ -49,7 +49,7 @@ backport:
 	find src -iname '*.php' -exec bin/remove-php7-features --write {} \;
 
 phar:
-	@composer update --no-dev
+	@composer install --no-dev
 	@$(PHP) box.phar build
 	@chmod +x build/test-generator.phar
 	@composer install
