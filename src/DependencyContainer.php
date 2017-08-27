@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Mihaeu\TestGenerator;
 
+use Docopt\Response;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\Parser;
@@ -14,6 +15,14 @@ use Twig_SimpleFilter;
 
 class DependencyContainer
 {
+    /** @var Response */
+    private $args;
+
+    public function __construct(Response $args)
+    {
+        $this->args = $args;
+    }
+
     public function nodeTraverser() : NodeTraverser
     {
         $nodeTraverser = new NodeTraverser();
@@ -34,9 +43,18 @@ class DependencyContainer
         return $twig;
     }
 
-    public function twigRenderer(bool $php5 = false, bool $phpunit5 = false) : TwigRenderer
+    public function templateConfiguration() : TemplateConfiguration
     {
-        return new TwigRenderer($this->twigEnvironment(), $php5, $phpunit5);
+        return new TemplateConfiguration(
+            $this->args['--php5'],
+            $this->args['--phpunit5'],
+            $this->args['--mockery']
+        );
+    }
+
+    public function twigRenderer() : TwigRenderer
+    {
+        return new TwigRenderer($this->twigEnvironment(), $this->templateConfiguration());
     }
 
     public function parser() : Parser

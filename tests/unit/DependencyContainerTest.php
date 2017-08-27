@@ -2,6 +2,7 @@
 
 namespace Mihaeu\TestGenerator;
 
+use Docopt\Response;
 use PhpParser\NodeTraverser;
 use PhpParser\Parser;
 use PHPUnit\Framework\TestCase;
@@ -17,7 +18,7 @@ class DependencyContainerTest extends TestCase
 
     protected function setUp()
     {
-        $this->dependencyContainer = new DependencyContainer();
+        $this->dependencyContainer = new DependencyContainer($this->createMock(Response::class));
     }
 
     public function testGeneratesDependencies() : void

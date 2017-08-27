@@ -1,6 +1,10 @@
 <?php{% if not php5 %} declare(strict_types = 1);{% endif %}
 
 
+{% if mockery %}
+use Mockery;
+use Mockery\MockInterface;
+{% endif %}
 {% if phpunit5 %}
 use PHPUnit_Framework_TestCase as TestCase;
 {% else %}
@@ -13,7 +17,7 @@ class {{ class }}Test extends TestCase
     private ${{ class|lcfirst }};
 
 {% for dependency in dependencies %}
-    /** @var {% if dependency.type %}{{ dependency.type }}{% else %}mixed{% endif %}{% if not dependency.isScalar %} | PHPUnit_Framework_MockObject_MockObject{% endif %} */
+    /** @var {% if dependency.type %}{{ dependency.type }}{% else %}mixed{% endif %}{% if not dependency.isScalar and not mockery %} | PHPUnit_Framework_MockObject_MockObject{% elseif not dependency.isScalar and mockery %} | MockInterface{% endif %} */
     private ${{ dependency.name }};
 
 {% endfor %}
@@ -25,8 +29,10 @@ class {{ class }}Test extends TestCase
         $this->{{ dependency.name }} = {{ dependency.value }};
 {% elseif not dependency.type %}
         $this->{{ dependency.name }} = null;
-{% else %}
+{% elseif not mockery %}
         $this->{{ dependency.name }} = $this->createMock({{ dependency.type }}::class);
+{% else %}
+        $this->{{ dependency.name }} = Mockery::mock({{ dependency.type }}::class);
 {% endif %}
 {% endfor %}
         $this->{{ class|lcfirst }} = new {{ class }}(

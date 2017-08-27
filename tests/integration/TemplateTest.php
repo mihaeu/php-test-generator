@@ -2,6 +2,7 @@
 
 namespace Mihaeu\TestGenerator;
 
+use Docopt\Response;
 use PHPUnit\Framework\TestCase;
 use Twig\Template;
 
@@ -15,11 +16,12 @@ class TemplateTest extends TestCase
 
     protected function setUp()
     {
-        $this->twigRenderer = new TwigRenderer(
-            (new DependencyContainer())->twigEnvironment(),
-            false,
-            false
-        );
+        $args = new Response([
+            '--php5' => false,
+            '--phpunit5' => false,
+            '--mockery' => false,
+        ]);
+        $this->twigRenderer = (new DependencyContainer($args))->twigRenderer();
     }
 
     public function testRendersTemplate()

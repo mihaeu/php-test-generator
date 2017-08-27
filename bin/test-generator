@@ -19,21 +19,22 @@ $description = <<<EOT
 Test-Generator
 
 Usage:
-  test-generator <file> [--php5] [--phpunit5]
+  test-generator <file> [--php5] [--phpunit5] [--mockery]
 
 Options:
   --php5        Generate PHP5 compatible code [default:false].
   --phpunit5    Generate a test for PHPUnit 5 [default:false].
+  --mockery     Generates mocks using Mockery [default:false].
 EOT;
 $args = Docopt::handle($description, $argv);
 
-$di = new DependencyContainer();
+$di = new DependencyContainer($args);
 try {
     $testGenerator = new TestGenerator(
         $di->parser(),
         new ClassAnalyser(),
         $di->nodeTraverser(),
-        $di->twigRenderer($args['--php5'], $args['--phpunit5'])
+        $di->twigRenderer()
     );
     echo $testGenerator->run(new PhpFile(new SplFileInfo($args['<file>'])));
 } catch (Exception $exception) {
