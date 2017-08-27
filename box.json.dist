@@ -1,0 +1,6 @@
+{
+    "directories": ["src/", "vendor/"],
+    "main": "bin/test-generator",
+    "output": "build/test-generator.phar",
+    "stub": true
+}

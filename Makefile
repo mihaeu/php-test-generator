@@ -42,11 +42,17 @@ testdox:
 	 | sed -r 's/(\[ \].+)/$(ERROR_COLOR)\1$(NO_COLOR)/' \
 	 | sed -r 's/(^[^ ].+)/$(WARN_COLOR)\1$(NO_COLOR)/'
 
+backport:
+	$(PHP_NO_INI) bin/remove-php7-features
+
 phar:
 	@composer update --no-dev
 	@$(PHP) box.phar build
 	@chmod +x build/test-generator.phar
 	@composer update
+
+phar55: backport phar
+	git checkout -- .
 
 phpstan:
 	@$(PHP_NO_INI) vendor/bin/phpstan analyse src tests/unit --level=4 -c phpstan.neon
