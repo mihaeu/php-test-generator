@@ -32,6 +32,8 @@ class TwigRendererTest extends TestCase
     public function testRendersClassnameAndParameters()
     {
         $this->template->expects($this->once())->method('render')->willReturn('test');
-        assertEquals('test', $this->twigRenderer->render('Test', [123]));
+        assertEquals(
+            'test',
+            $this->twigRenderer->render(new Clazz('', '', ''), [123]));
     }
 }

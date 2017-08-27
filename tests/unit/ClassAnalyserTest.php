@@ -35,6 +35,11 @@ class ClassAnalyserTest extends TestCase
     public function testOnlyRegistersOnConstructors() : void
     {
         $classNode = $this->createMock(Class_::class);
+        $name = $this->createMock(Name::class);
+        $name->name = 'Test';
+        $name->parts = ['Test'];
+        $classNode->name = 'Test';
+        $classNode->namespacedName = $name;
         $this->classAnalyser->enterNode($classNode);
         assertEmpty($this->classAnalyser->getParameters());
     }
@@ -79,10 +84,14 @@ class ClassAnalyserTest extends TestCase
     public function testFindsClass() : void
     {
         $classNode = $this->createMock(Class_::class);
-        $classNode->name = 'A';
+        $classNode->name = 'b';
+        $name = $this->createMock(Name::class);
+        $name->parts = ['a', 'b'];
+        $classNode->namespacedName = $name;
 
         $this->classAnalyser->enterNode($classNode);
-        assertEquals('A', $this->classAnalyser->getClass());
+        $expected = new Clazz('b', 'a\b', 'a');
+        assertEquals($expected, $this->classAnalyser->getClass());
     }
 
     /**

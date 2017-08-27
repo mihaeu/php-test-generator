@@ -22,11 +22,12 @@ class TwigRenderer
         $this->templateConfiguration = $templateConfiguration;
     }
 
-    public function render(string $className, array $dependencies) : string
+    public function render(Clazz $class, array $dependencies) : string
     {
-        return $this->template->render([
-            'class' => $className,
-            'dependencies' => $dependencies,
-        ] + $this->templateConfiguration->toArray());
+        return $this->template->render(
+            ['dependencies' => $dependencies]
+            + $this->templateConfiguration->toArray()
+            + $class->toArray()
+        );
     }
 }

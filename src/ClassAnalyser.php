@@ -20,7 +20,7 @@ class ClassAnalyser extends NodeVisitorAbstract
     /** @var Dependency[] */
     private $parameters = [];
 
-    /** @var string */
+    /** @var Clazz */
     private $class;
 
     public function enterNode(Node $node)
@@ -37,7 +37,7 @@ class ClassAnalyser extends NodeVisitorAbstract
                 return $parameters;
             }, $this->parameters);
         } elseif ($node instanceof Node\Stmt\Class_) {
-            $this->class = $node->name;
+            $this->class = Clazz::fromClassNode($node);
         }
     }
 
@@ -46,7 +46,7 @@ class ClassAnalyser extends NodeVisitorAbstract
         return $this->parameters;
     }
 
-    public function getClass() : ?string
+    public function getClass() : ?Clazz
     {
         return $this->class;
     }

@@ -3,7 +3,6 @@
 namespace Mihaeu\TestGenerator;
 
 use PhpParser\NodeTraverser;
-use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\Parser;
 
 class TestGenerator

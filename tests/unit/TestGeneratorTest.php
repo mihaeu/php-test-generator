@@ -50,11 +50,11 @@ class TestGeneratorTest extends TestCase
     public function testPrintsEmptyTemplateIfFileDoesNotHaveAConstructor() : void
     {
         $this->parser->method('parse')->willReturn([]);
-        $this->classAnalyser->method('getClass')->willReturn('A');
+        $this->classAnalyser->method('getClass')->willReturn(null);
         $file = $this->createMock(PhpFile::class);
         $file->method('content')->willReturn('');
-        $this->twigRenderer->method('render')->willReturn('test');
-        assertEquals('test', $this->testGenerator->run($file));
+        $this->twigRenderer->method('render')->willReturn(new Clazz('', '', ''));
+        assertEquals('', $this->testGenerator->run($file));
     }
 
     public function testReturnsEmptyStringForFileWithoutClass() : void
@@ -66,5 +66,17 @@ class TestGeneratorTest extends TestCase
         $this->classAnalyser->method('getClass')->willReturn(null);
 
         assertEmpty($this->testGenerator->run($emptyFile));
+    }
+
+    public function testRendersClassAndDependencies() : void
+    {
+        $file = $this->createMock(PhpFile::class);
+        $file->method('content')->willReturn('');
+
+        $this->parser->method('parse')->willReturn([]);
+        $this->classAnalyser->method('getClass')->willReturn(new Clazz('', '', ''));
+
+        $this->twigRenderer->expects($this->once())->method('render');
+        $this->testGenerator->run($file);
     }
 }

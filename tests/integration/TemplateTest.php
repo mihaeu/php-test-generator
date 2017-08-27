@@ -60,7 +60,7 @@ class TestTest extends TestCase
 }
 
 EOT;
-        $actual = $this->twigRenderer->render('Test', [
+        $actual = $this->twigRenderer->render(new Clazz('Test', '', ''), [
             ['name' => 'customer', 'type' => 'Customer'],
             ['name' => 'name', 'type' => 'string', 'value' => '\'test\'', 'isScalar' => true],
         ]);
