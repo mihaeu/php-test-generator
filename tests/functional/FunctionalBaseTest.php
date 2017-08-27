@@ -61,7 +61,7 @@ class FunctionalBaseTest extends TestCase
     {
         return strtolower(
             trim(
-                preg_replace('/[A-Z]/', ' $1', $camelCaseText)
+                preg_replace('/([A-Z])/', ' $1', $camelCaseText)
             )
         );
     }
