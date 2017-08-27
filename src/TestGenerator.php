@@ -17,17 +17,20 @@ class TestGenerator
     /** @var NodeTraverser */
     private $nodeTraverser;
 
+    /** @var TwigRenderer */
+    private $twigRenderer;
+
     public function __construct(
         Parser $parser,
-        NameResolver $nameResolver,
         ClassAnalyser $classAnalyser,
-        NodeTraverser $nodeTraverser
+        NodeTraverser $nodeTraverser,
+        TwigRenderer $twigRenderer
     ) {
         $this->parser = $parser;
         $this->classAnalyser = $classAnalyser;
         $this->nodeTraverser = $nodeTraverser;
-        $this->nodeTraverser->addVisitor($nameResolver);
         $this->nodeTraverser->addVisitor($this->classAnalyser);
+        $this->twigRenderer = $twigRenderer;
     }
 
     public function run(PhpFile $file) : string
@@ -39,8 +42,7 @@ class TestGenerator
             return '';
         }
 
-        $template = phpunit6Template();
-        return $template(
+        return $this->twigRenderer->render(
             $this->classAnalyser->getClass(),
             $this->classAnalyser->getParameters()
         );

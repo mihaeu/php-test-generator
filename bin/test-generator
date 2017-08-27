@@ -2,6 +2,7 @@
 <?php
 
 use Mihaeu\TestGenerator\ClassAnalyser;
+use Mihaeu\TestGenerator\DependencyContainer;
 use Mihaeu\TestGenerator\PhpFile;
 use Mihaeu\TestGenerator\TestGenerator;
 use PhpParser\NodeTraverser;
@@ -25,12 +26,13 @@ Usage:
 EOT;
 $args = Docopt::handle($description, $argv);
 
+$di = new DependencyContainer();
 try {
     $testGenerator = new TestGenerator(
-        (new ParserFactory())->create(ParserFactory::PREFER_PHP7),
-        new NameResolver(),
+        $di->parser(),
         new ClassAnalyser(),
-        new NodeTraverser()
+        $di->nodeTraverser(),
+        $di->twigRenderer()
     );
     echo $testGenerator->run(new PhpFile(new SplFileInfo($args['<file>'])));
 } catch (Exception $exception) {

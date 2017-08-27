@@ -34,7 +34,10 @@ humbug:
 unit:
 	$(PHP_NO_INI) $(PHPUNIT) -c phpunit.xml.dist --testsuite=unit
 
-test: unit feature
+integration:
+	$(PHP_NO_INI) $(PHPUNIT) -c phpunit.xml.dist --testsuite=integration
+
+test: unit feature integration
 
 testdox:
 	@$(PHP_NO_INI) $(PHPUNIT) -c phpunit.xml.dist --testdox \

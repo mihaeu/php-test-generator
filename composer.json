@@ -13,7 +13,8 @@
     "require": {
         "php": "^7.1",
         "nikic/php-parser": "^3.0",
-        "docopt/docopt": "^1.0"
+        "docopt/docopt": "^1.0",
+        "twig/twig": "^1.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^5.7",
@@ -34,16 +35,14 @@
     "autoload": {
         "psr-4": {
             "Mihaeu\\TestGenerator\\": ["src/"]
-        },
-        "files": [
-            "templates/phpunit6/phpunit6Template.php"
-        ]
+        }
     },
     "autoload-dev": {
         "psr-4": {
             "Mihaeu\\TestGenerator\\": [
                 "tests/unit/",
-                "tests/functional/"
+                "tests/functional/",
+                "tests/integration/"
             ]
         },
         "files": ["vendor/phpunit/phpunit/src/Framework/Assert/Functions.php"]

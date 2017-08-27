@@ -3,7 +3,6 @@
 namespace Mihaeu\TestGenerator;
 
 use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;

@@ -1,0 +1,45 @@
+<?php{% if not php5 %} declare(strict_types = 1);{% endif %}
+
+
+{% if phpunit5 %}
+use PHPUnit_Framework_TestCase as TestCase;
+{% else %}
+use PHPUnit\Framework\TestCase;
+{% endif %}
+
+class {{ class }}Test extends TestCase
+{
+    /** @var {{ class }} */
+    private ${{ class|lcfirst }};
+
+{% for dependency in dependencies %}
+    /** @var {% if dependency.type %}{{ dependency.type }}{% else %}mixed{% endif %}{% if not dependency.isScalar %} | PHPUnit_Framework_MockObject_MockObject{% endif %} */
+    private ${{ dependency.name }};
+
+{% endfor %}
+    protected function setUp(){% if php7 %} : void{% endif %}
+
+    {
+{% for dependency in dependencies %}
+{% if not dependency.value|isNull %}
+        $this->{{ dependency.name }} = {{ dependency.value }};
+{% elseif not dependency.type %}
+        $this->{{ dependency.name }} = null;
+{% else %}
+        $this->{{ dependency.name }} = $this->createMock({{ dependency.type }}::class);
+{% endif %}
+{% endfor %}
+        $this->{{ class|lcfirst }} = new {{ class }}(
+{% for dependency in dependencies %}
+            $this->{{ dependency.name }}{% if not loop.last %},{% endif %}
+
+{% endfor %}
+        );
+    }
+
+    public function testMissing{% if php7 %}() : void{% else %}(){% endif %}
+
+    {
+        $this->fail('Test not yet implemented');
+    }
+}

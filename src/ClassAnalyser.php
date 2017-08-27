@@ -17,7 +17,7 @@ class ClassAnalyser extends NodeVisitorAbstract
     private const TYPE_DEFAULT_BOOL = 'false';
     private const TYPE_DEFAULT_ARRAY = '[]';
 
-    /** @var array */
+    /** @var Dependency[] */
     private $parameters = [];
 
     /** @var string */
