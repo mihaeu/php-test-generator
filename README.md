@@ -16,10 +16,16 @@ bin/test-generator --help
 ```
 
 ```
-Test Generator
+Test-Generator
 
 Usage:
-  test-generator <file>
+  test-generator <file> [--php5] [--phpunit5] [--mockery] [--covers]
+
+Options:
+  --php5        Generate PHP5 compatible code [default:false].
+  --phpunit5    Generate a test for PHPUnit 5 [default:false].
+  --mockery     Generates mocks using Mockery [default:false].
+  --covers      Adds the @covers annotation   [default:false].
 ```
 
 ## Installation
