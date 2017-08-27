@@ -11,6 +11,11 @@ use PHPUnit_Framework_TestCase as TestCase;
 use PHPUnit\Framework\TestCase;
 {% endif %}
 
+{% if covers %}
+/**
+ * @covers {{ class }}
+ */
+{% endif %}
 class {{ class }}Test extends TestCase
 {
     /** @var {{ class }} */

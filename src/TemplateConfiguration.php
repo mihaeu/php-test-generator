@@ -15,11 +15,15 @@ class TemplateConfiguration
     /** @var bool */
     private $mockery;
 
-    public function __construct($php5 = false, $phpunit5 = false, $mockery = false)
+    /** @var bool */
+    private $covers;
+
+    public function __construct($php5 = false, $phpunit5 = false, $mockery = false, $covers = false)
     {
         $this->php5 = $php5;
         $this->phpunit5 = $phpunit5;
         $this->mockery = $mockery;
+        $this->covers = $covers;
     }
 
     public function toArray() : array
@@ -28,6 +32,7 @@ class TemplateConfiguration
             'php5' => $this->php5,
             'phpunit5' => $this->phpunit5,
             'mockery' => $this->mockery,
+            'covers' => $this->covers,
         ];
     }
 }

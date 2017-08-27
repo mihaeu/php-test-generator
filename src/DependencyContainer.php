@@ -48,7 +48,8 @@ class DependencyContainer
         return new TemplateConfiguration(
             $this->args['--php5'],
             $this->args['--phpunit5'],
-            $this->args['--mockery']
+            $this->args['--mockery'],
+            $this->args['--covers']
         );
     }
 

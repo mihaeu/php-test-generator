@@ -39,6 +39,7 @@ class TemplateConfigurationTest extends TestCase
             'php5' => false,
             'phpunit5' => false,
             'mockery' => false,
+            'covers' => false,
         ], $this->templateConfiguration->toArray());
     }
 }
