@@ -39,7 +39,8 @@ class TestGenerator
             return '';
         }
 
-        return phpunit6Template()(
+        $template = phpunit6Template();
+        return $template(
             $this->classAnalyser->getClass(),
             $this->classAnalyser->getParameters()
         );

@@ -2,9 +2,9 @@
 
 namespace Mihaeu\TestGenerator;
 
-function phpunit6Template() : \Closure
+function phpunit6Template()
 {
-    return function (string $class, array $parameters = []) : string {
+    return function ($class, array $parameters = []) {
     ob_start(); ?>
 ?php declare(strict_types = 1);
 
@@ -17,7 +17,7 @@ class <?= $class ?>Test extends TestCase
 
 <?php if (!empty($parameters)) : ?>
 <?php foreach ($parameters as $name => $dependency) : ?>
-    /** @var <?= $dependency->type() ?? 'mixed' ?><?php if (!$dependency->isScalar()) :?> | PHPUnit_Framework_MockObject_MockObject<?php endif; ?> */
+    /** @var <?= $dependency->type() ?: 'mixed' ?><?php if (!$dependency->isScalar()) :?> | PHPUnit_Framework_MockObject_MockObject<?php endif; ?> */
     private $<?= $name ?>;
 
 <?php endforeach; ?>

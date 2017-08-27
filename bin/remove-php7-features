@@ -52,16 +52,18 @@ class Php7FeatureRemover extends NodeVisitorAbstract
                 }
             }
             $node->returnType = null;
-        } else if ($node instanceof Declare_) {
+        } else if ($node instanceof Declare_
+            && isset($node->declares[0]->key)
+            && $node->declares[0]->key === 'strict_types')  {
             return NodeTraverser::REMOVE_NODE;
         } else if ($node instanceof ClassConst) {
             $node->flags = 0;
         } else if ($node instanceof FuncCall && $this->containsSplatOperator($node)) {
-
+            // todo
         } else if ($node instanceof StaticCall && $this->containsSplatOperator($node)) {
-
+            // todo
         } else if ($node instanceof MethodCall && $this->containsSplatOperator($node)) {
-            echo $node->name;
+            // todo
         }
         return null;
     }
