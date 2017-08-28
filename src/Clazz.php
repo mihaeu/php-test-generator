@@ -24,6 +24,11 @@ class Clazz
         $this->namespace = $namespace;
     }
 
+    public function clazz(): string
+    {
+        return $this->class;
+    }
+
     public static function fromClassNode(Class_ $classNode) : Clazz
     {
         $namespaceParts = $classNode->namespacedName->parts;

@@ -34,12 +34,12 @@ class DependencyContainer
     {
         $twig = new Twig_Environment(
             new Twig_Loader_Filesystem(__DIR__ . '/../templates'),
-            [
-                'autoescape' => false
-            ]
+            ['autoescape' => false]
         );
         $twig->addFilter($this->lcfirstFilter());
         $twig->addFilter($this->isNullFilter());
+        $twig->addFilter($this->transformClazzFilter($this->args['--subject-format'] ?: '%t'));
+        $twig->addFilter($this->transformDependencyFilter($this->args['--field-format'] ?: '%n'));
         return $twig;
     }
 
@@ -73,6 +73,28 @@ class DependencyContainer
     {
         return new Twig_SimpleFilter('isNull', function ($x) {
             return $x === null;
+        });
+    }
+
+    public function transformClazzFilter($format) : Twig_SimpleFilter
+    {
+        return new Twig_SimpleFilter('transformClazz', function ($x) use ($format) {
+            return str_replace(
+                ['%t', '%T', '%f', '%F'],
+                [lcfirst($x), ucfirst($x), lcfirst($x), ucfirst($x)],
+                $format
+            );
+        });
+    }
+
+    public function transformDependencyFilter($format) : Twig_SimpleFilter
+    {
+        return new Twig_SimpleFilter('transformDependency', function (Dependency $x) use ($format) {
+            return str_replace(
+                ['%t', '%T', '%n', '%N'],
+                [lcfirst($x->type() ?: ''), ucfirst($x->type() ?: ''), lcfirst($x->name()), ucfirst($x->name())],
+                $format
+            );
         });
     }
 

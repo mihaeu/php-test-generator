@@ -19,29 +19,29 @@ use {{ baseClass.namespacedName }};
 class {{ class }}Test extends {{ baseClass.class }}
 {
     /** @var {{ class }} */
-    private ${{ class|lcfirst }};
+    private ${{ class | transformClazz }};
 
 {% for dependency in dependencies %}
     /** @var {% if dependency.type %}{{ dependency.type }}{% else %}mixed{% endif %}{% if not dependency.isScalar and not mockery %} | PHPUnit_Framework_MockObject_MockObject{% elseif not dependency.isScalar and mockery %} | MockInterface{% endif %} */
-    private ${{ dependency.name }};
+    private ${{ dependency | transformDependency }};
 
 {% endfor %}
     protected function setUp()
     {
 {% for dependency in dependencies %}
 {% if not dependency.value|isNull %}
-        $this->{{ dependency.name }} = {{ dependency.value }};
+        $this->{{ dependency|transformDependency }} = {{ dependency.value }};
 {% elseif not dependency.type %}
-        $this->{{ dependency.name }} = null;
+        $this->{{ dependency|transformDependency }} = null;
 {% elseif not mockery %}
-        $this->{{ dependency.name }} = $this->createMock({{ dependency.type }}::class);
+        $this->{{ dependency|transformDependency }} = $this->createMock({{ dependency.type }}::class);
 {% else %}
-        $this->{{ dependency.name }} = Mockery::mock({{ dependency.type }}::class);
+        $this->{{ dependency|transformDependency }} = Mockery::mock({{ dependency.type }}::class);
 {% endif %}
 {% endfor %}
-        $this->{{ class|lcfirst }} = new {{ class }}(
+        $this->{{ class|transformClazz }} = new {{ class }}(
 {% for dependency in dependencies %}
-            $this->{{ dependency.name }}{% if not loop.last %},{% endif %}
+            $this->{{ dependency|transformDependency }}{% if not loop.last %},{% endif %}
 
 {% endfor %}
         );

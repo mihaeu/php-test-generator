@@ -22,6 +22,8 @@ class TemplateTest extends TestCase
             '--mockery' => false,
             '--covers' => false,
             '--base-class' => 'PHPUnit\Framework\TestCase',
+            '--subject-format' => false,
+            '--field-format' => false,
         ]);
         $this->twigRenderer = (new DependencyContainer($args))->twigRenderer();
     }
@@ -62,8 +64,8 @@ class TestTest extends TestCase
 
 EOT;
         $actual = $this->twigRenderer->render(new Clazz('Test', '', ''), [
-            ['name' => 'customer', 'type' => 'Customer'],
-            ['name' => 'name', 'type' => 'string', 'value' => '\'test\'', 'isScalar' => true],
+            new Dependency('customer', 'Customer'),
+            new Dependency('name', 'string', '\'test\''),
         ]);
         assertEquals($expected, $actual);
     }

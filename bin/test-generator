@@ -19,7 +19,7 @@ $description = <<<EOT
 Test-Generator
 
 Usage:
-  test-generator <file> [--php5] [--phpunit5] [--mockery] [--covers] [--base-class=<base-class>]
+  test-generator [options] <file>
 
 Options:
   --php5                        Generate PHP5 compatible code [default:false].
@@ -27,6 +27,19 @@ Options:
   --mockery                     Generates mocks using Mockery [default:false].
   --covers                      Adds the @covers annotation   [default:false].
   --base-class=<base-class>     Inherit from this base class e.g. "Example\\TestCase".
+  --subject-format=<format>     Format the field for the subject class.
+  --field-format=<format>       Format the fields for dependencies.
+
+Format:
+  %n                            Name starting with a lower-case letter.
+  %N                            Name starting with an upper-case letter.
+  %t                            Type starting with a lower-case letter.
+  %T                            Type starting with a upper-case letter.
+
+Format Examples:
+  "mock_%t"                      Customer => mock_customer
+  "%NTest"                       arg => ArgTest
+  "testClass"                    SomeName => TestClass
 EOT;
 $args = Docopt::handle($description, $argv);
 
