@@ -81,4 +81,9 @@ class ClazzTest extends TestCase
         $this->setExpectedException(InvalidFullyQualifiedNameException::class);
         Clazz::fromFullyQualifiedNameString('.');
     }
+
+    public function testHasClazz() : void
+    {
+        assertEquals('Test', (new Clazz('Test', 'Test', ''))->clazz());
+    }
 }

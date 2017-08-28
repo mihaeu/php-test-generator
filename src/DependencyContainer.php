@@ -80,7 +80,7 @@ class DependencyContainer
     {
         return new Twig_SimpleFilter('transformClazz', function ($x) use ($format) {
             return str_replace(
-                ['%t', '%T', '%f', '%F'],
+                ['%t', '%T', '%n', '%N'],
                 [lcfirst($x), ucfirst($x), lcfirst($x), ucfirst($x)],
                 $format
             );

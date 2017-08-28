@@ -100,4 +100,76 @@ class DependencyContainerTest extends TestCase
         assertFalse($callable(''));
         assertFalse($callable(0));
     }
+
+    /**
+     * @dataProvider clazzProvider
+     */
+    public function testTransformClazzFilter($message, $format, $clazz, $expected) : void
+    {
+        $callable = $this->dependencyContainer->transformClazzFilter($format)->getCallable();
+        assertEquals($expected, $callable($clazz), "$message with '$format'");
+    }
+
+    public function clazzProvider() : array
+    {
+        return [
+            [
+                'message' => 'Lowercase name',
+                'format' => '%n',
+                'clazz' => 'Test',
+                'expected' => 'test',
+            ],
+            [
+                'message' => 'Uppercase name',
+                'format' => '%N',
+                'clazz' => 'test',
+                'expected' => 'Test',
+            ],
+            [
+                'message' => 'Lowercase type with suffix',
+                'format' => '%tMock',
+                'clazz' => 'customer',
+                'expected' => 'customerMock',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider dependencyProvider
+     */
+    public function testTransformDependencyFilter($message, $format, $dependency, $expected) : void
+    {
+        $callable = $this->dependencyContainer->transformDependencyFilter($format)->getCallable();
+        assertEquals($expected, $callable($dependency), "$message with '$format'");
+    }
+
+    public function dependencyProvider() : array
+    {
+        return [
+            [
+                'message' => 'Lowercase name',
+                'format' => '%n',
+                'dependency' => new Dependency('Test'),
+                'expected' => 'test',
+            ],
+            [
+                'message' => 'Uppercase name',
+                'format' => '%N',
+                'dependency' => new Dependency('test'),
+                'expected' => 'Test',
+            ],
+            [
+                'message' => 'Uppercase type',
+                'format' => '%T',
+                'dependency' => new Dependency('test', 'stdClass'),
+                'expected' => 'StdClass',
+            ],
+            [
+                'message' => 'Lowercase type with suffix',
+                'format' => '%tMock',
+                'dependency' => new Dependency('test', 'Customer'),
+                'expected' => 'customerMock',
+            ],
+        ];
+    }
 }
