@@ -24,7 +24,7 @@ class Clazz
         $this->namespace = $namespace;
     }
 
-    public static function fromClassNode(Class_ $classNode)
+    public static function fromClassNode(Class_ $classNode) : Clazz
     {
         $namespaceParts = $classNode->namespacedName->parts;
         $namespace = count($namespaceParts)
@@ -35,6 +35,22 @@ class Clazz
             implode('\\', $namespaceParts),
             $namespace
         );
+    }
+
+    public static function fromFullyQualifiedNameString(string $fqn) : Clazz
+    {
+        self::assertNameIsValidPhpIdentifier($fqn);
+
+        $parts = explode('\\', $fqn);
+        $namespace = implode('\\', array_slice($parts, 0, -1));
+        return new Clazz($parts[count($parts) - 1], $fqn, $namespace);
+    }
+
+    private static function assertNameIsValidPhpIdentifier(string $fqn): void
+    {
+        if (!preg_match('/^[a-zA-Z_\x7f-\xff][\\a-zA-Z0-9_\x7f-\xff]*$/', $fqn)) {
+            throw new InvalidFullyQualifiedNameException($fqn);
+        }
     }
 
     public function toArray() : array

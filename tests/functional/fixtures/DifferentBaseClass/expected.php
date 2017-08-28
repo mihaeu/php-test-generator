@@ -1,8 +1,10 @@
-<?php
+<?php declare(strict_types = 1);
 
-use PHPUnit_Framework_TestCase;
+namespace First\Second;
 
-class ATest extends PHPUnit_Framework_TestCase
+use Vendor\Test\Example;
+
+class ATest extends Example
 {
     /** @var A */
     private $a;

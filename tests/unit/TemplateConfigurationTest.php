@@ -12,6 +12,9 @@ class TemplateConfigurationTest extends TestCase
     /** @var TemplateConfiguration */
     private $templateConfiguration;
 
+    /** @var Clazz */
+    private $clazz;
+
     /** @var bool */
     private $php5;
 
@@ -21,21 +24,32 @@ class TemplateConfigurationTest extends TestCase
     /** @var bool */
     private $mockery;
 
+    /** @var bool */
+    private $covers;
+
     protected function setUp()
     {
+        $this->clazz = new Clazz('Test', 'Test', '');
         $this->php5 = false;
         $this->phpunit5 = false;
         $this->mockery = false;
         $this->templateConfiguration = new TemplateConfiguration(
+            $this->clazz,
             $this->php5,
             $this->phpunit5,
-            $this->mockery
+            $this->mockery,
+            $this->covers
         );
     }
 
     public function testConvertsToArray()
     {
         assertEquals([
+            'baseClass' => [
+                'class' => 'Test',
+                'namespacedName' => 'Test',
+                'namespace' => '',
+            ],
             'php5' => false,
             'phpunit5' => false,
             'mockery' => false,

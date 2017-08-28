@@ -16,17 +16,74 @@ class DependencyContainerTest extends TestCase
     /** @var DependencyContainer */
     private $dependencyContainer;
 
+    /** @var Response */
+    private $args;
+
     protected function setUp()
     {
-        $this->dependencyContainer = new DependencyContainer($this->createMock(Response::class));
+        $this->args = $this->createMock(Response::class);
+        $this->dependencyContainer = new DependencyContainer($this->args);
     }
 
-    public function testGeneratesDependencies() : void
+    public function testGeneratesNodeTraverser() : void
     {
         assertInstanceOf(NodeTraverser::class, $this->dependencyContainer->nodeTraverser());
+    }
+
+    public function testGeneratesTwig_Environment() : void
+    {
         assertInstanceOf(Twig_Environment::class, $this->dependencyContainer->twigEnvironment());
+    }
+
+    public function testGeneratesTwigRenderer() : void
+    {
         assertInstanceOf(TwigRenderer::class, $this->dependencyContainer->twigRenderer());
+    }
+
+    public function testGeneratesParser() : void
+    {
         assertInstanceOf(Parser::class, $this->dependencyContainer->parser());
+    }
+
+    public function testGeneratesTemplateConfiguration() : void
+    {
+        assertInstanceOf(TemplateConfiguration::class, $this->dependencyContainer->templateConfiguration());
+    }
+
+    public function testGenerateBaseClassFromDefaultForPhpunit6() : void
+    {
+        $dependencyContainer = new DependencyContainer(new Response([
+            '--php5' => false,
+            '--base-class' => false,
+        ]));
+        assertEquals(
+            new Clazz('TestCase', 'PHPUnit\\Framework\\TestCase', 'PHPUnit\\Framework'),
+            $dependencyContainer->baseClass()
+        );
+    }
+
+    public function testGenerateBaseClassFromDefaultForPhpunit5() : void
+    {
+        $dependencyContainer = new DependencyContainer(new Response([
+            '--php5' => true,
+            '--base-class' => false,
+        ]));
+        assertEquals(
+            new Clazz('PHPUnit_Framework_TestCase', 'PHPUnit_Framework_TestCase', ''),
+            $dependencyContainer->baseClass()
+        );
+    }
+
+    public function testGenerateBaseClass() : void
+    {
+        $dependencyContainer = new DependencyContainer(new Response([
+            '--php5' => true,
+            '--base-class' => 'Vendor\\Test',
+        ]));
+        assertEquals(
+            new Clazz('Test', 'Vendor\\Test', 'Vendor'),
+            $dependencyContainer->baseClass()
+        );
     }
 
     public function testLcfirstFilter() : void

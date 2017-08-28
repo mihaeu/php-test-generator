@@ -9,18 +9,14 @@ namespace {{ namespace }};
 use Mockery;
 use Mockery\MockInterface;
 {% endif %}
-{% if phpunit5 %}
-use PHPUnit_Framework_TestCase as TestCase;
-{% else %}
-use PHPUnit\Framework\TestCase;
-{% endif %}
+use {{ baseClass.namespacedName }};
 
 {% if covers %}
 /**
  * @covers {{ namespacedName }}
  */
 {% endif %}
-class {{ class }}Test extends TestCase
+class {{ class }}Test extends {{ baseClass.class }}
 {
     /** @var {{ class }} */
     private ${{ class|lcfirst }};

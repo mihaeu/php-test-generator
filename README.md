@@ -19,13 +19,14 @@ bin/test-generator --help
 Test-Generator
 
 Usage:
-  test-generator <file> [--php5] [--phpunit5] [--mockery] [--covers]
+  test-generator <file> [--php5] [--phpunit5] [--mockery] [--covers] [--base-class=<base-class>]
 
 Options:
-  --php5        Generate PHP5 compatible code [default:false].
-  --phpunit5    Generate a test for PHPUnit 5 [default:false].
-  --mockery     Generates mocks using Mockery [default:false].
-  --covers      Adds the @covers annotation   [default:false].
+  --php5                        Generate PHP5 compatible code [default:false].
+  --phpunit5                    Generate a test for PHPUnit 5 [default:false].
+  --mockery                     Generates mocks using Mockery [default:false].
+  --covers                      Adds the @covers annotation   [default:false].
+  --base-class=<base-class>     Inherit from this base class e.g. "Example\TestCase".
 ```
 
 ## Installation

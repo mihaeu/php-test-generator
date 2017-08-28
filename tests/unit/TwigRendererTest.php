@@ -26,7 +26,7 @@ class TwigRendererTest extends TestCase
         $this->template = $this->createMock(Template::class);
         $this->twig = $this->createMock(Twig_Environment::class);
         $this->twig->expects($this->once())->method('load')->willReturn($this->template);
-        $this->twigRenderer = new TwigRenderer($this->twig, new TemplateConfiguration());
+        $this->twigRenderer = new TwigRenderer($this->twig, new TemplateConfiguration(new Clazz('', '', '')));
     }
 
     public function testRendersClassnameAndParameters()

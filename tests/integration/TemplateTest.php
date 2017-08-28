@@ -21,6 +21,7 @@ class TemplateTest extends TestCase
             '--phpunit5' => false,
             '--mockery' => false,
             '--covers' => false,
+            '--base-class' => 'PHPUnit\Framework\TestCase',
         ]);
         $this->twigRenderer = (new DependencyContainer($args))->twigRenderer();
     }

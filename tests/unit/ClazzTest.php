@@ -8,6 +8,7 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @covers Mihaeu\TestGenerator\Clazz
+ * @covers Mihaeu\TestGenerator\InvalidFullyQualifiedNameException
  */
 class ClazzTest extends TestCase
 {
@@ -56,5 +57,28 @@ class ClazzTest extends TestCase
             'namespacedName' => 'Namespace\Test',
             'namespace' => 'Namespace',
         ], Clazz::fromClassNode($classNode)->toArray());
+    }
+
+    public function testGeneratesFromStringWithoutNamespace() : void
+    {
+        assertEquals(
+            new Clazz('Test', 'Test', ''),
+            Clazz::fromFullyQualifiedNameString('Test')
+        );
+    }
+
+
+    public function testGeneratesFromStringWithNamespace() : void
+    {
+        assertEquals(
+            new Clazz('Test', 'Vendor\Example\Test', 'Vendor\Example'),
+            Clazz::fromFullyQualifiedNameString('Vendor\Example\Test')
+        );
+    }
+
+    public function testRejectsInvalidPhpIdentifier() : void
+    {
+        $this->setExpectedException(InvalidFullyQualifiedNameException::class);
+        Clazz::fromFullyQualifiedNameString('.');
     }
 }

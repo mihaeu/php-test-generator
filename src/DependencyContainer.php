@@ -46,6 +46,7 @@ class DependencyContainer
     public function templateConfiguration() : TemplateConfiguration
     {
         return new TemplateConfiguration(
+            $this->baseClass(),
             $this->args['--php5'],
             $this->args['--phpunit5'],
             $this->args['--mockery'],
@@ -73,5 +74,20 @@ class DependencyContainer
         return new Twig_SimpleFilter('isNull', function ($x) {
             return $x === null;
         });
+    }
+
+    public function baseClass() : Clazz
+    {
+        return $this->args['--base-class']
+            ? Clazz::fromFullyQualifiedNameString($this->args['--base-class'])
+            : $this->defaultBaseClass();
+    }
+
+    private function defaultBaseClass()
+    {
+        if ($this->args['--php5']) {
+            return Clazz::fromFullyQualifiedNameString('PHPUnit_Framework_TestCase');
+        }
+        return Clazz::fromFullyQualifiedNameString('PHPUnit\Framework\TestCase');
     }
 }
