@@ -39,12 +39,16 @@ class {{ class }}Test extends {{ baseClass.class }}
         $this->{{ dependency|transformDependency }} = Mockery::mock({{ dependency.type }}::class);
 {% endif %}
 {% endfor %}
+{% if dependencies %}
         $this->{{ class|transformClazz }} = new {{ class }}(
 {% for dependency in dependencies %}
             $this->{{ dependency|transformDependency }}{% if not loop.last %},{% endif %}
 
 {% endfor %}
         );
+{% else %}
+        $this->{{ class|transformClazz }} = new {{ class }}();
+{% endif %}
     }
 
     public function testMissing()
