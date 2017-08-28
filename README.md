@@ -69,8 +69,8 @@ composer global require "mihaeu/test-generator:^1.0"
 Since I actually need to use this on 5.5 legacy projects (should work with 5.4 as well, but didn't test for it), I also release a phar file which works for older versions:
 
 ```bash
-wget https://github.com/mihaeu/php-test-generator/releases/download/1.1.0/test-generator-1.1.0.phar
-chmod +x test-generator-1.1.0.phar
+wget https://github.com/mihaeu/php-test-generator/releases/download/1.2.0/test-generator-1.2.0.phar
+chmod +x test-generator-1.2.0.phar
 ```
 
 **Please note that by doing this we should be disgusted at ourselves for not upgrading to PHP 7.1 (soon 7.2).**
