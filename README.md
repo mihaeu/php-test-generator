@@ -1,4 +1,6 @@
-# 🔧 Test Generator 🔨
+<p align="center">
+  <img src="https://dephpend.com/testgenerator-logo.png">
+</p>
 
 [![Travis branch](https://img.shields.io/travis/mihaeu/php-test-generator/develop.svg)](https://travis-ci.org/mihaeu/php-test-generator)
 [![Codecov branch](https://img.shields.io/codecov/c/github/mihaeu/php-test-generator/develop.svg)](https://codecov.io/gh/mihaeu/php-test-generator)
