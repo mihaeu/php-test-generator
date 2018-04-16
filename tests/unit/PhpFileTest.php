@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Mihaeu\TestGenerator;
 
-use PHPUnit_Framework_TestCase as TestCase;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @covers Mihaeu\TestGenerator\PhpFile

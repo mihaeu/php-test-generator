@@ -3,7 +3,7 @@
 namespace Mihaeu\TestGenerator;
 
 use PHPUnit\Framework\TestCase;
-use PHPUnit_Framework_MockObject_MockObject;
+use PHPUnit\Framework\MockObject\MockObject;
 use Twig\Template;
 use Twig_Environment;
 

@@ -78,7 +78,7 @@ class ClazzTest extends TestCase
 
     public function testRejectsInvalidPhpIdentifier() : void
     {
-        $this->setExpectedException(InvalidFullyQualifiedNameException::class);
+        $this->expectException(InvalidFullyQualifiedNameException::class);
         Clazz::fromFullyQualifiedNameString('.');
     }
 
