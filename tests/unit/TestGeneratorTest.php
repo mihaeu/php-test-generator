@@ -7,8 +7,8 @@ namespace Mihaeu\TestGenerator;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\Parser;
-use PHPUnit_Framework_TestCase as TestCase;
-use PHPUnit_Framework_MockObject_MockObject as Mock;
+use PHPUnit\Framework\TestCase;
+use PHPUnit\Framework\MockObject\MockObject as Mock;
 
 /**
  * @covers Mihaeu\TestGenerator\TestGenerator
