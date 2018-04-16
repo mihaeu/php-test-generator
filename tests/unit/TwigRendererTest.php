@@ -15,10 +15,10 @@ class TwigRendererTest extends TestCase
     /** @var TwigRenderer */
     private $twigRenderer;
 
-    /** @var Twig_Environment | PHPUnit_Framework_MockObject_MockObject */
+    /** @var Twig_Environment | PHPUnit\Framework\MockObject\MockObject */
     private $twig;
 
-    /** @var Template | PHPUnit_Framework_MockObject_MockObject */
+    /** @var Template | PHPUnit\Framework\MockObject\MockObject */
     private $template;
 
     protected function setUp()
