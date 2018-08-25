@@ -4,9 +4,12 @@
 require __DIR__ . '/../vendor/autoload.php';
 
 use PhpParser\Node;
+use PhpParser\Node\Expr\BinaryOp\Coalesce as CoalesceNode;
 use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\Isset_ as IssetNode;
 use PhpParser\Node\Expr\MethodCall;
 use PhpParser\Node\Expr\StaticCall;
+use PhpParser\Node\Expr\Ternary as TernaryNode;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\ClassMethod;
@@ -35,6 +38,7 @@ class Php7FeatureRemover extends NodeVisitorAbstract
         'boolean',
         'double',
         'iterable',
+        'Throwable',
     ];
 
     public function leaveNode(Node $node) {
@@ -45,10 +49,6 @@ class Php7FeatureRemover extends NodeVisitorAbstract
                 }
                 if ($param->variadic) {
                     $param->variadic = false;
-                    $node->stmts = array_merge(
-                        [],
-                        $node->stmts
-                    );
                 }
             }
             $node->returnType = null;
@@ -58,33 +58,46 @@ class Php7FeatureRemover extends NodeVisitorAbstract
             return NodeTraverser::REMOVE_NODE;
         } else if ($node instanceof ClassConst) {
             $node->flags = 0;
-        } else if ($node instanceof FuncCall && $this->containsSplatOperator($node)) {
-            // todo
-        } else if ($node instanceof StaticCall && $this->containsSplatOperator($node)) {
-            // todo
-        } else if ($node instanceof MethodCall && $this->containsSplatOperator($node)) {
-            // todo
+        } else if ($node instanceof CoalesceNode) {
+            return $this->convertCoalesceToTernaryWithIsset($node);
+        } else if ($node instanceof FuncCall) {
+             return $this->replaceSplatOperator($node);
+        } else if ($node instanceof StaticCall) {
+             return $this->replaceSplatOperator($node);
+        } else if ($node instanceof MethodCall) {
+             return $this->replaceSplatOperator($node);
         }
         return null;
     }
 
-    private function containsSplatOperator(Node $node)
+    /**
+     * @TODO
+     */
+    private function replaceSplatOperator(Node $node): Node
     {
-        foreach ($node->args ?: [] as $arg) {
-            if ($arg->unpack === true) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private function createSplatReplacement($a)
-    {
+        return $node;
         $callable = [];
         $arguments = [];
         return new FuncCall(
             new Name('call_user_func_array'),
             [$callable, $arguments]
+        );
+
+    }
+
+    private function createSplatReplacement(Node\Arg $arg)
+    {
+        return new FuncCall(
+            new Name('func_get_args')
+        );
+    }
+
+    private function convertCoalesceToTernaryWithIsset(CoalesceNode $coalesceNode): TernaryNode
+    {
+        return new TernaryNode(
+            new IssetNode([$coalesceNode->left]),
+            $coalesceNode->left,
+            $coalesceNode->right
         );
     }
 }
@@ -92,7 +105,7 @@ class Php7FeatureRemover extends NodeVisitorAbstract
 function main(\Docopt\Response $args)
 {
     $inputFile = $args['<input-file>'];
-    $outputFile = $args['<output-file>'] ?: '/dev/stdout';
+    $outputFile = $args['<output-file>'];
 
     if (!is_file($inputFile)
         || !is_readable($inputFile)
@@ -105,9 +118,8 @@ function main(\Docopt\Response $args)
         $outputFile = $inputFile;
     }
 
-    if ($outputFile === null
-        && !is_writable($outputFile)
-        && !is_writable(dirname($outputFile))) {
+    if ($outputFile !== null && !is_writable(dirname($outputFile)))
+    {
         echo 'Output file is not writable' . PHP_EOL;
         exit(1);
     }
@@ -121,10 +133,12 @@ function main(\Docopt\Response $args)
 
     try {
         $code = file_get_contents($inputFile);
-        $stmts = $traverser->traverse($parser->parse($code));
-        $code = $prettyPrinter->prettyPrintFile($stmts);
+        $statements = $traverser->traverse($parser->parse($code));
+        $code = $prettyPrinter->prettyPrintFile($statements);
 
-        file_put_contents($outputFile, $code);
+        $outputFile
+            ? file_put_contents($outputFile, $code)
+            : print($code);
     } catch (PhpParser\Error $e) {
         echo 'Parse Error: ' . $e->getMessage() . PHP_EOL;
         exit(2);

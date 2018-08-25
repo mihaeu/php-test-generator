@@ -46,7 +46,7 @@ testdox:
 	 | sed -r 's/(^[^ ].+)/$(WARN_COLOR)\1$(NO_COLOR)/'
 
 backport:
-	find src -iname '*.php' -exec bin/remove-php7-features --write {} \;
+	find src -iname '*.php' -exec tools/remove-php7-features --write {} \;
 
 phar:
 	@composer install --no-dev

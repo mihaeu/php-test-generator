@@ -17,3 +17,4 @@
 humbuglog.txt
 
 tests/resources/simple-example-project/tests
+tests/resources/php7-to-php55-example/actual.php
