@@ -31,7 +31,7 @@ bin/test-generator --help
 Test-Generator
 
 Usage:
-  test-generator [options] <file>
+  test-generator [options] [(--src-base --test-base)] <file>
 
 Options:
   --php5                        Generate PHP5 compatible code [default:false].
@@ -41,6 +41,8 @@ Options:
   --base-class=<base-class>     Inherit from this base class e.g. "Example\TestCase".
   --subject-format=<format>     Format the field for the subject class.
   --field-format=<format>       Format the fields for dependencies.
+  -s, --src-base=<path>         Base directory for source files; requires --test-base
+  -t, --test-base=<path>        Base directory for test files; requires --src-base; writes output to that directory
 
 Format:
   %n                            Name starting with a lower-case letter.
@@ -177,7 +179,7 @@ Make sure to keep the code coverage at 100% (and run humbug for mutation testing
 
 ## LICENSE
 
-> Copyright (c) 2017 Michael Haeuslmann
+> Copyright (c) 2017-2018 Michael Haeuslmann
 > 
 > Permission is hereby granted, free of charge, to any person obtaining a copy
 > of this software and associated documentation files (the "Software"), to deal

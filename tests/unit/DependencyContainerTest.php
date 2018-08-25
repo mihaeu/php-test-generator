@@ -1,4 +1,4 @@
-<?php declare(strict_types = 1);
+<?php declare(strict_types=1);
 
 namespace Mihaeu\TestGenerator;
 
@@ -25,32 +25,32 @@ class DependencyContainerTest extends TestCase
         $this->dependencyContainer = new DependencyContainer($this->args);
     }
 
-    public function testGeneratesNodeTraverser() : void
+    public function testGeneratesNodeTraverser(): void
     {
         assertInstanceOf(NodeTraverser::class, $this->dependencyContainer->nodeTraverser());
     }
 
-    public function testGeneratesTwig_Environment() : void
+    public function testGeneratesTwig_Environment(): void
     {
         assertInstanceOf(Twig_Environment::class, $this->dependencyContainer->twigEnvironment());
     }
 
-    public function testGeneratesTwigRenderer() : void
+    public function testGeneratesTwigRenderer(): void
     {
         assertInstanceOf(TwigRenderer::class, $this->dependencyContainer->twigRenderer());
     }
 
-    public function testGeneratesParser() : void
+    public function testGeneratesParser(): void
     {
         assertInstanceOf(Parser::class, $this->dependencyContainer->parser());
     }
 
-    public function testGeneratesTemplateConfiguration() : void
+    public function testGeneratesTemplateConfiguration(): void
     {
         assertInstanceOf(TemplateConfiguration::class, $this->dependencyContainer->templateConfiguration());
     }
 
-    public function testGenerateBaseClassFromDefaultForPhpunit6() : void
+    public function testGenerateBaseClassFromDefaultForPhpunit6(): void
     {
         $dependencyContainer = new DependencyContainer(new Response([
             '--php5' => false,
@@ -62,7 +62,7 @@ class DependencyContainerTest extends TestCase
         );
     }
 
-    public function testGenerateBaseClassFromDefaultForPhpunit5() : void
+    public function testGenerateBaseClassFromDefaultForPhpunit5(): void
     {
         $dependencyContainer = new DependencyContainer(new Response([
             '--php5' => true,
@@ -74,7 +74,25 @@ class DependencyContainerTest extends TestCase
         );
     }
 
-    public function testGenerateBaseClass() : void
+    public function testGenerateTestGenerator(): void
+    {
+        $dependencyContainer = new DependencyContainer(new Response([
+            '--subject-format' => '',
+            '--field-format' => '',
+            '--base-class' => '',
+            '--php5' => '',
+            '--phpunit5' => '',
+            '--mockery' => '',
+            '--covers' => '',
+            '<file>' => '',
+        ]));
+        assertInstanceOf(
+            TestGenerator::class,
+            $dependencyContainer->testGenerator()
+        );
+    }
+
+    public function testGenerateBaseClass(): void
     {
         $dependencyContainer = new DependencyContainer(new Response([
             '--php5' => true,
@@ -86,13 +104,13 @@ class DependencyContainerTest extends TestCase
         );
     }
 
-    public function testLcfirstFilter() : void
+    public function testLcfirstFilter(): void
     {
         $callable = $this->dependencyContainer->lcfirstFilter()->getCallable();
         assertEquals('test', $callable('Test'));
     }
 
-    public function testIsNullFilter() : void
+    public function testIsNullFilter(): void
     {
         $callable = $this->dependencyContainer->isNullFilter()->getCallable();
         assertTrue($callable(null));
@@ -104,13 +122,13 @@ class DependencyContainerTest extends TestCase
     /**
      * @dataProvider clazzProvider
      */
-    public function testTransformClazzFilter($message, $format, $clazz, $expected) : void
+    public function testTransformClazzFilter($message, $format, $clazz, $expected): void
     {
         $callable = $this->dependencyContainer->transformClazzFilter($format)->getCallable();
         assertEquals($expected, $callable($clazz), "$message with '$format'");
     }
 
-    public function clazzProvider() : array
+    public function clazzProvider(): array
     {
         return [
             [
@@ -137,13 +155,13 @@ class DependencyContainerTest extends TestCase
     /**
      * @dataProvider dependencyProvider
      */
-    public function testTransformDependencyFilter($message, $format, $dependency, $expected) : void
+    public function testTransformDependencyFilter($message, $format, $dependency, $expected): void
     {
         $callable = $this->dependencyContainer->transformDependencyFilter($format)->getCallable();
         assertEquals($expected, $callable($dependency), "$message with '$format'");
     }
 
-    public function dependencyProvider() : array
+    public function dependencyProvider(): array
     {
         return [
             [

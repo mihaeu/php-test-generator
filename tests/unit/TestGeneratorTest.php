@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace Mihaeu\TestGenerator;
 
+use Mihaeu\TestGenerator\Output\OutputProcessor;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\Parser;
-use PHPUnit\Framework\TestCase;
 use PHPUnit\Framework\MockObject\MockObject as Mock;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @covers Mihaeu\TestGenerator\TestGenerator
@@ -33,17 +34,22 @@ class TestGeneratorTest extends TestCase
     /** @var TwigRenderer | Mock */
     private $twigRenderer;
 
+    /** @var OutputProcessor | Mock */
+    private $outputProcessor;
+
     protected function setUp() : void
     {
         $this->parser = $this->createMock(Parser::class);
         $this->classAnalyser = $this->createMock(ClassAnalyser::class);
         $this->nodeTraverser = $this->createMock(NodeTraverser::class);
         $this->twigRenderer = $this->createMock(TwigRenderer::class);
+        $this->outputProcessor = $this->createMock(OutputProcessor::class);
         $this->testGenerator = new TestGenerator(
             $this->parser,
             $this->classAnalyser,
             $this->nodeTraverser,
-            $this->twigRenderer
+            $this->twigRenderer,
+            $this->outputProcessor
         );
     }
 

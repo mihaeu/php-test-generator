@@ -15,3 +15,5 @@
 # build artifacts
 /build
 humbuglog.txt
+
+tests/resources/simple-example-project/tests

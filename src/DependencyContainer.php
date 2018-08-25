@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Mihaeu\TestGenerator;
 
 use Docopt\Response;
+use Mihaeu\TestGenerator\Output\Exception\InvalidFileException;
+use Mihaeu\TestGenerator\Output\OutputProcessor;
+use Mihaeu\TestGenerator\Output\OutputProcessorFactory;
 use PhpParser\NodeTraverser;
 use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\Parser;
@@ -21,6 +24,24 @@ class DependencyContainer
     public function __construct(Response $args)
     {
         $this->args = $args;
+    }
+
+    /**
+     * @return TestGenerator
+     * @throws InvalidFileException
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
+     */
+    public function testGenerator(): TestGenerator
+    {
+        return new TestGenerator(
+            $this->parser(),
+            new ClassAnalyser(),
+            $this->nodeTraverser(),
+            $this->twigRenderer(),
+            $this->outputProcessor()
+        );
     }
 
     public function nodeTraverser() : NodeTraverser
@@ -103,6 +124,18 @@ class DependencyContainer
         return $this->args['--base-class']
             ? Clazz::fromFullyQualifiedNameString($this->args['--base-class'])
             : $this->defaultBaseClass();
+    }
+
+    /**
+     * @throws InvalidFileException
+     */
+    private function outputProcessor(): OutputProcessor
+    {
+        return OutputProcessorFactory::create(
+            $this->args['<file>'],
+            $this->args['--src-base'] ?? null,
+            $this->args['--test-base'] ?? null
+        );
     }
 
     private function defaultBaseClass()

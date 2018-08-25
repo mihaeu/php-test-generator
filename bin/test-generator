@@ -1,10 +1,8 @@
 #!/usr/bin/env php
 <?php
 
-use Mihaeu\TestGenerator\ClassAnalyser;
 use Mihaeu\TestGenerator\DependencyContainer;
 use Mihaeu\TestGenerator\PhpFile;
-use Mihaeu\TestGenerator\TestGenerator;
 
 if (file_exists(__DIR__.'/../vendor/autoload.php')) {
     require __DIR__.'/../vendor/autoload.php';
@@ -19,16 +17,18 @@ $description = <<<EOT
 Test-Generator
 
 Usage:
-  test-generator [options] <file>
+  test-generator [options] [(--src-base --test-base)] <file>
 
 Options:
   --php5                        Generate PHP5 compatible code [default:false].
   --phpunit5                    Generate a test for PHPUnit 5 [default:false].
   --mockery                     Generates mocks using Mockery [default:false].
   --covers                      Adds the @covers annotation   [default:false].
-  --base-class=<base-class>     Inherit from this base class e.g. "Example\\TestCase".
+  --base-class=<base-class>     Inherit from this base class e.g. "Example\TestCase".
   --subject-format=<format>     Format the field for the subject class.
   --field-format=<format>       Format the fields for dependencies.
+  -s, --src-base=<path>         Base directory for source files; requires --test-base
+  -t, --test-base=<path>        Base directory for test files; requires --src-base; writes output to that directory
 
 Format:
   %n                            Name starting with a lower-case letter.
@@ -45,13 +45,7 @@ $args = Docopt::handle($description, $argv);
 
 $di = new DependencyContainer($args);
 try {
-    $testGenerator = new TestGenerator(
-        $di->parser(),
-        new ClassAnalyser(),
-        $di->nodeTraverser(),
-        $di->twigRenderer()
-    );
-    echo $testGenerator->run(new PhpFile(new SplFileInfo($args['<file>'])));
+    $di->testGenerator()->run(new PhpFile(new SplFileInfo($args['<file>'])));
 } catch (Exception $exception) {
     echo $description
         . PHP_EOL

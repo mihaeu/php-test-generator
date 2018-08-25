@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+set -eu
+
+readonly DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+
+"${DIR}/ensure-docopt-readme-and-app-are-identical"
+"${DIR}/../vendor/bin/phpunit" -c "${DIR}/../phpunit.xml.dist"
