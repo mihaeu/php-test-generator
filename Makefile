@@ -50,6 +50,7 @@ backport:
 
 phar:
 	@composer install --no-dev
+	@mkdir -p build
 	@$(PHP) box.phar build
 	@chmod +x build/test-generator.phar
 	@composer install
