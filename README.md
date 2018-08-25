@@ -193,7 +193,6 @@ class StaticAnalyserTest extends TestCase
 ## Roadmap
 
  - avoid FQNs by default by including (`use`) all required namespaces
- - `--src-base=<dir>` and `--test-base=<dir>` so that your tests end up in the right place
  - `--template=<path>` for custom templates
  - and many more features are planned, just [check out the functional backlog](https://github.com/mihaeu/php-test-generator/tree/develop/tests/functional/backlog)
 
