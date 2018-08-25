@@ -2,7 +2,7 @@
 
 set -eu
 
-readonly DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null && pwd )"
+readonly DIR="$(dirname "$(readlink -f "$0")")"
 
 "${DIR}/ensure-docopt-readme-and-app-are-identical"
 "${DIR}/../vendor/bin/phpunit" -c "${DIR}/../phpunit.xml.dist"
