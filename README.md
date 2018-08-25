@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://dephpend.com/testgenerator-logo.png">
+  <img src="doc/testgenerator-logo.png">
 </p>
 
 [![Travis branch](https://img.shields.io/travis/mihaeu/php-test-generator/develop.svg)](https://travis-ci.org/mihaeu/php-test-generator)
@@ -22,6 +22,8 @@
 This is where `test-generator` comes into play. Try it out, configure everything to your needs and create an alias for your shell or even better include it as an external tool in your editor/IDE ([like PHPStorm](https://www.jetbrains.com/help/phpstorm/external-tools.html)).
 
 ## Usage
+
+### CLI
 
 ```bash
 bin/test-generator --help
@@ -55,6 +57,30 @@ Format Examples:
   "%NTest"                       arg => ArgTest
   "testClass"                    SomeName => TestClass
 ```
+
+### PHPStorm
+
+I recommend integrating `test-generator` as an external tool in PHPStorm. This works, because PHPStorm can pass the
+filename of the currently active file as an argument to `test-generator`, which will then generate and write the
+test to your preconfigured location. 
+
+Navigate to Settings > Tools > External Tools and klick on **+**. Add the following information: 
+
+| Field             | Value                                                                        |
+|-------------------|------------------------------------------------------------------------------|
+| Name              | test-generator                                                               |
+| Description       | Generate Test Stubs                                                          |
+| Program           | `$PhpExecutable`                                                             |
+| Arguments         | `vendor/bin/test-generator $FilePath$ -s base=src -t tests/unit`             |
+| Working directory | `$ProjectFileDir$`                                                           |
+
+Remember to adjust *Program* and *Arguments* in case you are using the `.phar` file.
+
+In case you want to generate different tests with different settings and locations, simply create more external tool entries.
+
+![How to integrate test-generator in PHPStorm](doc/phpstorm-integration.png)
+
+**Pro Tip**: Assign a shortcut to this tool, because you might up ending it a lot ;)
 
 ## Installation
 
