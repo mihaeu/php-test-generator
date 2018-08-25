@@ -43,9 +43,9 @@ Format Examples:
 EOT;
 $args = Docopt::handle($description, $argv);
 
-$di = new DependencyContainer($args);
+$container = new DependencyContainer($args);
 try {
-    $di->testGenerator()->run(new PhpFile(new SplFileInfo($args['<file>'])));
+    $container->testGenerator()->run(new PhpFile(new SplFileInfo($args['<file>'])));
 } catch (Exception $exception) {
     echo $description
         . PHP_EOL
