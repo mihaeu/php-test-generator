@@ -80,7 +80,7 @@ In case you want to generate different tests with different settings and locatio
 
 ![How to integrate test-generator in PHPStorm](doc/phpstorm-integration.png)
 
-**Pro Tip**: Assign a shortcut to this tool, because you might up ending it a lot ;)
+**Pro Tip**: Assign a shortcut to this tool, because you might end up using it a lot ;)
 
 ## Installation
 
