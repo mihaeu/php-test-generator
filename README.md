@@ -4,7 +4,9 @@
 
 [![Travis branch](https://img.shields.io/travis/mihaeu/php-test-generator/develop.svg)](https://travis-ci.org/mihaeu/php-test-generator)
 [![Codecov branch](https://img.shields.io/codecov/c/github/mihaeu/php-test-generator/develop.svg)](https://codecov.io/gh/mihaeu/php-test-generator)
-![](https://img.shields.io/badge/PHP-7.1-brightgreen.svg)
+![](https://img.shields.io/badge/PHP-7.3-brightgreen.svg)
+![](https://img.shields.io/badge/PHP-7.2-brightgreen.svg)
+![](https://img.shields.io/badge/PHP-7.1-yellow.svg)
 ![](https://img.shields.io/badge/PHP-7.0-yellow.svg)
 ![](https://img.shields.io/badge/PHP-5.6-yellow.svg)
 ![](https://img.shields.io/badge/PHP-5.5-yellow.svg)
