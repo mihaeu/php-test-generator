@@ -204,7 +204,7 @@ Make sure to keep the code coverage at 100% (and run humbug for mutation testing
 
 ## LICENSE
 
-> Copyright (c) 2017-2018 Michael Haeuslmann
+> Copyright (c) 2017-2019 Michael Haeuslmann
 > 
 > Permission is hereby granted, free of charge, to any person obtaining a copy
 > of this software and associated documentation files (the "Software"), to deal
