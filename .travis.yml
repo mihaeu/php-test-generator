@@ -16,6 +16,7 @@ before_script:
 
 script:
  - vendor/bin/phpunit --coverage-clover=coverage.xml
+ - vendor/bin/infection
  - tools/ensure-docopt-readme-and-app-are-identical
 
 after_success:
