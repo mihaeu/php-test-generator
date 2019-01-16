@@ -36,7 +36,7 @@ class Clazz
             ? implode('\\', array_slice($namespaceParts, 0, -1))
             : '';
         return new Clazz(
-            $classNode->name,
+            (string) $classNode->name,
             implode('\\', $namespaceParts),
             $namespace
         );

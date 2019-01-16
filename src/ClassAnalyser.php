@@ -26,11 +26,11 @@ class ClassAnalyser extends NodeVisitorAbstract
     public function enterNode(Node $node)
     {
         if ($node instanceof ClassMethod
-            && $node->name === self::CONSTRUCTOR_METHOD_NAME
+            && $node->name->name === self::CONSTRUCTOR_METHOD_NAME
         ) {
             $this->parameters = array_reduce($node->getParams(), function (array $parameters, Param $parameter) {
-                $parameters[$parameter->name] = new Dependency(
-                    $parameter->name,
+                $parameters[$parameter->var->name] = new Dependency(
+                    $parameter->var->name,
                     $this->generateType($parameter),
                     $this->generateDefault($parameter)
                 );
@@ -61,23 +61,28 @@ class ClassAnalyser extends NodeVisitorAbstract
             return $this->defaultToString($parameter->default);
         }
 
-        if ($parameter->type === 'string') {
+        if ($parameter->type  === null) {
+            return null;
+        }
+
+        $name = $parameter->type->toString();
+        if ($name === 'string') {
             return self::TYPE_DEFAULT_STRING;
         }
 
-        if ($parameter->type === 'float') {
+        if ($name === 'float') {
             return self::TYPE_DEFAULT_FLOAT;
         }
 
-        if ($parameter->type === 'int') {
+        if ($name === 'int') {
             return self::TYPE_DEFAULT_INT;
         }
 
-        if ($parameter->type === 'bool') {
+        if ($name === 'bool') {
             return self::TYPE_DEFAULT_BOOL;
         }
 
-        if ($parameter->type === 'array') {
+        if ($name === 'array') {
             return self::TYPE_DEFAULT_ARRAY;
         }
 
@@ -86,10 +91,6 @@ class ClassAnalyser extends NodeVisitorAbstract
 
     private function generateType(Param $parameter) : ?string
     {
-        if (is_string($parameter->type)) {
-            return $parameter->type;
-        }
-
         if ($parameter->type) {
             return $parameter->type->toString();
         }

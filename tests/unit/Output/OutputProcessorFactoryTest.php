@@ -30,7 +30,7 @@ class OutputProcessorFactoryTest extends TestCase
             '/sfdsdf',
             __DIR__,
             ''
-        );;
+        );
     }
 
     public function testThrowsExceptionIfSrcBaseDoesNotExist(): void
@@ -41,7 +41,7 @@ class OutputProcessorFactoryTest extends TestCase
             __FILE__,
             '/sdfsdfs',
             ''
-        );;
+        );
     }
 
     public function testThrowsExceptionIfSrcBaseIsNotADirectory(): void

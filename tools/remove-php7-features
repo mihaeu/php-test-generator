@@ -15,11 +15,11 @@ use PhpParser\Node\Stmt\ClassConst;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Function_;
+use PhpParser\NodeTraverser;
+use PhpParser\NodeVisitor\NameResolver;
 use PhpParser\NodeVisitorAbstract;
 use PhpParser\ParserFactory;
 use PhpParser\PrettyPrinter;
-use PhpParser\NodeTraverser;
-use PhpParser\NodeVisitor\NameResolver;
 
 $description = <<<EOT
 PHP7-Type-Declaration-Remover
@@ -44,7 +44,7 @@ class Php7FeatureRemover extends NodeVisitorAbstract
     public function leaveNode(Node $node) {
         if ($node instanceof ClassMethod || $node instanceof Function_) {
             foreach ($node->params as &$param) {
-                if (in_array($param->type, self::$INVALID_PARAM_TYPES, true)) {
+                if (in_array($param->type->name ?? '', self::$INVALID_PARAM_TYPES, true)) {
                     $param->type = null;
                 }
                 if ($param->variadic) {
@@ -53,8 +53,7 @@ class Php7FeatureRemover extends NodeVisitorAbstract
             }
             $node->returnType = null;
         } else if ($node instanceof Declare_
-            && isset($node->declares[0]->key)
-            && $node->declares[0]->key === 'strict_types')  {
+            && $node->declares[0]->key->name ?? '' === 'strict_types')  {
             return NodeTraverser::REMOVE_NODE;
         } else if ($node instanceof ClassConst) {
             $node->flags = 0;
@@ -83,13 +82,6 @@ class Php7FeatureRemover extends NodeVisitorAbstract
             [$callable, $arguments]
         );
 
-    }
-
-    private function createSplatReplacement(Node\Arg $arg)
-    {
-        return new FuncCall(
-            new Name('func_get_args')
-        );
     }
 
     private function convertCoalesceToTernaryWithIsset(CoalesceNode $coalesceNode): TernaryNode

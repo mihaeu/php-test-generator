@@ -3,7 +3,6 @@
 namespace Mihaeu\TestGenerator;
 
 use PHPUnit\Framework\TestCase;
-use PHPUnit\Framework\MockObject\MockObject;
 use Twig\Template;
 use Twig_Environment;
 
@@ -34,6 +33,7 @@ class TwigRendererTest extends TestCase
         $this->template->expects($this->once())->method('render')->willReturn('test');
         assertEquals(
             'test',
-            $this->twigRenderer->render(new Clazz('', '', ''), [123]));
+            $this->twigRenderer->render(new Clazz('', '', ''), [123])
+        );
     }
 }

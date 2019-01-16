@@ -2,8 +2,11 @@
 
 namespace Mihaeu\TestGenerator;
 
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\DNumber;
@@ -46,23 +49,22 @@ class ClassAnalyserTest extends TestCase
 
     public function testFindsParametersInConstructors() : void
     {
-        $methodNode = $this->createMock(ClassMethod::class);
-        $methodNode->name = '__construct';
+        $param = new Param(
+            new Variable('example'),
+            null,
+            new Identifier('A')
+        );
+        $methodNode = new ClassMethod(
+            new Identifier('__construct'),
+            ['params' => [$param]]
+        );
 
-        $className = $this->createMock(Name::class);
-        $className->method('toString')->willReturn('A');
-
-        $param = $this->createMock(Param::class);
-        $param->name = 'example';
-        $param->type = $className;
-
-        $methodNode->method('getParams')->willReturn([$param]);
         $this->classAnalyser->enterNode($methodNode);
 
         assertEquals(
             ['example' => new Dependency('example', 'A')],
             $this->classAnalyser->getParameters()
-    );
+        );
     }
 
     public function testAnalysesOnlyClassConstructors() : void
@@ -96,6 +98,10 @@ class ClassAnalyserTest extends TestCase
 
     /**
      * @dataProvider parameterProvider
+     * @param string $message
+     * @param $type
+     * @param string|null $default
+     * @param string|null $expected
      */
     public function testGeneratesDefaults(string $message, $type, ?string $default, ?string $expected) : void
     {
@@ -109,91 +115,91 @@ class ClassAnalyserTest extends TestCase
     public function parameterProvider() : array
     {
         return [
-            [
+            'Object without default' => [
                 'message' => 'Object without default',
                 'type' => 'ArrayObject',
                 'default' => null,
                 'expected' => '',
             ],
-            [
+            'No arguments' => [
                 'message' => 'No arguments',
                 'type' => null,
                 'default' => null,
                 'expected' => null,
             ],
-            [
+            'Bool with no default' => [
                 'message' => 'Bool with no default',
                 'type' => 'bool',
                 'default' => null,
                 'expected' => self::TYPE_BOOL_FALSE,
             ],
-            [
+            'No type with true default' => [
                 'message' => 'No type with true default',
                 'type' => null,
                 'default' => self::TYPE_BOOL_TRUE,
                 'expected' => self::TYPE_BOOL_TRUE,
             ],
-            [
+            'No type with TRUE default' => [
                 'message' => 'No type with TRUE default',
                 'type' => null,
                 'default' => 'TRUE',
                 'expected' => self::TYPE_BOOL_TRUE,
             ],
-            [
+            'No type with false default' => [
                 'message' => 'No type with false default',
                 'type' => null,
                 'default' => self::TYPE_BOOL_FALSE,
                 'expected' => self::TYPE_BOOL_FALSE,
             ],
-            [
+            'Int with no default' => [
                 'message' => 'Int with no default',
                 'type' => 'int',
                 'default' => null,
                 'expected' => '0',
             ],
-            [
+            'No type with int default' => [
                 'message' => 'No type with int default',
                 'type' => null,
                 'default' => '123',
                 'expected' => '123',
             ],
-            [
+            'Float type with no default' => [
                 'message' => 'Float type with no default',
                 'type' => 'float',
                 'default' => null,
                 'expected' => '0.0',
             ],
-            [
+            'No type with float default' => [
                 'message' => 'No type with float default',
                 'type' => null,
                 'default' => '3.1415',
                 'expected' => '3.1415',
             ],
-            [
+            'String with no default' => [
                 'message' => 'String with no default',
                 'type' => 'string',
                 'default' => null,
                 'expected' => "''",
             ],
-            [
+            'No type with string default' => [
                 'message' => 'No type with string default',
                 'type' => null,
                 'default' => '"string"',
                 'expected' => "'string'",
             ],
-            [
+            'Array type with no default' => [
                 'message' => 'Array type with no default',
                 'type' => 'array',
                 'default' => null,
                 'expected' => '[]',
             ],
-            [
+            'No type with array default' => [
                 'message' => 'No type with array default',
                 'type' => null,
                 'default' => '[]',
                 'expected' => '[]',
             ],
-            [
+            'No type with defined global constant' => [
                 'message' => 'No type with defined global constant',
                 'type' => null,
                 'default' => 'SOME_CONST',
@@ -204,55 +210,46 @@ class ClassAnalyserTest extends TestCase
 
     private function createConstructorWithOneParamenter(string $message, ?string $type, $default): ClassMethod
     {
-        $param = $this->createMock(Param::class);
-        $param->name = str_replace(' ', '_', $message);
-        $param->type = $this->typeFromString($type);
-        $param->default = $this->defaultToNode($default);
+        $param = new Param(
+            new Variable(str_replace(' ', '_', $message)),
+            $this->defaultToNode($default),
+            $this->typeFromString($type)
+        );
 
-        $functionNode = $this->createMock(ClassMethod::class);
-        $functionNode->name = '__construct';
-        $functionNode->method('getParams')->willReturn([$param]);
-        return $functionNode;
+        return new ClassMethod('__construct', ['params' => [$param]]);
     }
 
-    private function typeFromString(?string $typeDefinition)
+    private function typeFromString(?string $typeDefinition): ?Name
     {
         if ($typeDefinition === null) {
             return null;
         }
 
-        if (
-            $typeDefinition === 'bool'
+        if ($typeDefinition === 'bool'
             || $typeDefinition === 'float'
             || $typeDefinition === 'double'
             || $typeDefinition === 'int'
             || $typeDefinition === 'string'
             || $typeDefinition === 'array'
         ) {
-            return $typeDefinition;
+            return new Name($typeDefinition);
         }
 
-        $className = $this->createMock(Name::class);
-        $className->method('toString')->willReturn($typeDefinition);
-        return $className;
+        return new Name($typeDefinition);
     }
 
-    private function defaultToNode($default)
+    private function defaultToNode($default): ?Expr
     {
         if ($default === null) {
             return null;
         }
 
         if (preg_match(self::REGEX_FLOAT, $default)) {
-            $float = $this->createMock(DNumber::class);
-            $float->value = (float) $default;
-            return $float;
+            return new DNumber((float) $default);
         }
 
         if (preg_match(self::REGEX_INT, $default)) {
-            $int = $this->createMock(LNumber::class);
-            $int->value = (int) $default;
-            return $int;
+            return new LNumber((int) $default);
         }
 
         if ($default === self::TYPE_BOOL_TRUE
@@ -260,26 +257,21 @@ class ClassAnalyserTest extends TestCase
             || $default === 'TRUE'
             || $default === 'FALSE'
         ) {
-            $bool = $this->createMock(ConstFetch::class);
-            $bool->value = stripos($default, self::TYPE_BOOL_TRUE) !== false;
-            $bool->name = $this->createMock(Name::class);
-            $bool->name->method('toString')->willReturn($default);
-            return $bool;
+//            $bool = $this->createMock(ConstFetch::class);
+//            $bool->value = stripos($default, self::TYPE_BOOL_TRUE) !== false;
+//            $bool->name = $this->createMock(Name::class);
+//            $bool->name->method('toString')->willReturn($default);
+            return new ConstFetch(new Name($default));
         }
 
         if ($default === '[]') {
-            return $this->createMock(Array_::class);
+            return new Array_();
         }
 
         if (preg_match('/^[\'"]/', $default)) {
-            $string = $this->createMock(String_::class);
-            $string->value = trim($default, '\'""');
-            return $string;
+            return new String_(trim($default, '\'""'));
         }
 
-        $const = $this->createMock(ConstFetch::class);
-        $const->name = $this->createMock(Name::class);
-        $const->name->method('toString')->willReturn($default);
-        return $const;
+        return new ConstFetch(new Name($default));
     }
 }

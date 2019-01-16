@@ -19,8 +19,7 @@ class OutputProcessorFactory
         string $subjectFile,
         string $srcBase = null,
         string $testBase = null
-    ): OutputProcessor
-    {
+    ): OutputProcessor {
         if (isset($srcBase, $testBase)) {
             return self::createFileWriter($subjectFile, $srcBase, $testBase);
         }
@@ -38,8 +37,7 @@ class OutputProcessorFactory
         string $subjectFile,
         string $srcBase,
         string $testBase
-    ): FileWriter
-    {
+    ): FileWriter {
         if (!is_readable($subjectFile)) {
             throw InvalidFileException::becauseFileIsNotReadable($subjectFile);
         }
