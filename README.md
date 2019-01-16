@@ -4,7 +4,7 @@
 
 [![Travis branch](https://img.shields.io/travis/mihaeu/php-test-generator/develop.svg)](https://travis-ci.org/mihaeu/php-test-generator)
 [![Codecov branch](https://img.shields.io/codecov/c/github/mihaeu/php-test-generator/develop.svg)](https://codecov.io/gh/mihaeu/php-test-generator)
-[![Infection MSI](https://badge.stryker-mutator.io/github.com/{username}/{repository_name}/{branch})](https://infection.github.io)
+[![Infection MSI](https://badge.stryker-mutator.io/github.com/mihaeu/php-test-generator/master)](https://infection.github.io)
 ![](https://img.shields.io/badge/PHP-7.3-brightgreen.svg)
 ![](https://img.shields.io/badge/PHP-7.2-brightgreen.svg)
 ![](https://img.shields.io/badge/PHP-7.1-yellow.svg)
